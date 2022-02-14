@@ -1,3 +1,4 @@
+from abc import abstractclassmethod
 from decimal import Decimal
 from datetime import datetime
 
@@ -27,10 +28,17 @@ class InvalidBanknoteValueException(Exception):
 
 # Contains methods for banknote storage
 class IBanknoteStorage:
-    def __subclasscheck__(self, __subclass: type) -> bool:
-        return (hasattr(__subclass, "get_cash_available") and callable(__subclass.get_cash_available) \
-        and hasattr(__subclass, "withdraw_banknotes") and callable(__subclass.withdraw_banknotes) \
-        and hasattr(__subclass, "deposit_banknotes") and callable(__subclass.deposit_banknotes))
+    @abstractclassmethod
+    def get_cash_available(self) -> Decimal:
+        pass
+
+    @abstractclassmethod
+    def withdraw_banknotes(self, amount: Decimal) -> list[Banknote]:
+        pass
+    
+    @abstractclassmethod
+    def deposit_banknotes(self, banknotes: list[Banknote]) -> None:
+        pass
 
 # Implements methods for operationing with banknotes storage
 class BanknoteStorage(IBanknoteStorage):
