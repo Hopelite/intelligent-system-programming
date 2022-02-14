@@ -165,6 +165,17 @@ class TellerMachineTests(unittest.TestCase):
         # Act, Assert
         self.assertRaises(NegativeMoneyAmountException, card_account.deposit_cash, -100)
 
+    def test_cardaccount_view_balance_returns_balance(self):
+        # Arrange
+        card_account = CardAccount()
+        expected = Decimal(100)
+        card_account.deposit_cash(expected)
+
+        # Act
+        actual = card_account.view_balance()
+
+        # Assert
+        self.assertEqual(expected, actual)
 
 if __name__ == "__main__":
     unittest.main()

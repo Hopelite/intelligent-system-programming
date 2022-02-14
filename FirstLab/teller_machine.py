@@ -97,6 +97,10 @@ class ICardAccount:
     def deposit_cash(self, amount: Decimal) -> None:
         pass
 
+    @abstractclassmethod
+    def view_balance(self) -> Decimal:
+        pass
+
 # Represents the card account
 class CardAccount(ICardAccount):
     def __init__(self) -> None:
@@ -117,6 +121,9 @@ class CardAccount(ICardAccount):
         if amount < 0:
             raise NegativeMoneyAmountException("Unable to deposit negative amount of cash.")
         self.__balance += amount
+
+    def view_balance(self) -> Decimal:
+        return self.__balance
 
 # Represents bank card model
 class BankCard:
