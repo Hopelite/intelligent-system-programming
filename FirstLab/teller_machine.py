@@ -1,4 +1,5 @@
 from decimal import Decimal
+from datetime import datetime
 
 # Represents the banknote model
 class Banknote:
@@ -76,4 +77,69 @@ class NegativeMoneyAmountException(Exception):
 
 # Exception raised when storage doesn't have enough money to withdraw
 class NotEnoughMoneyException(Exception):
+    pass
+
+# Represents bank card model
+class BankCard:
+    def __init__(self, card_number: str, expiration_date: datetime, username: str, cvc: str, password: str) -> None:
+        self.__card_number = self.__validate_card_number(card_number)
+        self.__expiration_date = expiration_date
+        self.__username = username
+        self.__cvc = self.__validate_cvc(cvc)
+        self.__password = self.__validate_password(password)
+
+    @property
+    def card_number(self) -> str:
+        return self.__card_number
+        
+    @property
+    def expiration_date(self) -> datetime:
+        return self.__expiration_date
+        
+    @property
+    def username(self) -> str:
+        return self.__username
+        
+    @property
+    def cvc(self) -> str:
+        return self.__cvc
+        
+    @property
+    def password(self) -> str:
+        return self.__password
+
+    def __validate_card_number(self, card_number: str) -> str:        
+        if len(card_number) != 16:
+            raise InvalidCardNumberException("Card number length must equal 16.")
+        if not card_number.isnumeric():
+            raise InvalidCardNumberException("Card number must contain digits only.")
+
+        return card_number
+
+    def __validate_cvc(self, cvc: str) -> str:
+        if len(cvc) != 3:
+            raise InvalidCvcException("CVC length must equal 3.")
+        if not cvc.isnumeric():
+            raise InvalidCvcException("CVC must contain digits only.")
+
+        return cvc
+
+    def __validate_password(self, password: str) -> str:
+        if len(password) != 4:
+            raise InvalidPasswordException("Password length must equal 4.")
+        if not password.isnumeric():
+            raise InvalidPasswordException("Password must contain digits only.")
+
+        return password
+
+# Exception raised when trying to pass invalid card number
+class InvalidCardNumberException(Exception):
+    pass
+
+# Exception raised when trying to pass invalid CVC
+class InvalidCvcException(Exception):
+    pass
+
+# Exception raised when trying to pass invalid password
+class InvalidPasswordException(Exception):
     pass
