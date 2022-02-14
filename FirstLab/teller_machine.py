@@ -120,7 +120,7 @@ class CardAccount(ICardAccount):
 
 # Represents bank card model
 class BankCard:
-    def __init__(self, card_number: str, expiration_date: datetime, username: str, cvc: str, password: str, card_account: CardAccount) -> None:
+    def __init__(self, card_number: str, expiration_date: datetime, username: str, cvc: str, password: str, card_account: ICardAccount) -> None:
         self.__card_number = self.__validate_card_number(card_number)
         self.__expiration_date = expiration_date
         self.__username = username
