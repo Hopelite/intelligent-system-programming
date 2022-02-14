@@ -159,25 +159,37 @@ class BankCard:
     def card_account(self) -> CardAccount:
         return self.__card_account
 
+    @property
+    def CARD_LENGTH(self):
+        return 16
+        
+    @property
+    def CVC_LENGTH(self):
+        return 3
+        
+    @property
+    def PASSWORD_LENGTH(self):
+        return 4
+
     def __validate_card_number(self, card_number: str) -> str:        
-        if len(card_number) != 16:
-            raise InvalidCardNumberException("Card number length must equal 16.")
+        if len(card_number) != self.CARD_LENGTH:
+            raise InvalidCardNumberException("Card number length must equal,", self.CARD_LENGTH)
         if not card_number.isnumeric():
             raise InvalidCardNumberException("Card number must contain digits only.")
 
         return card_number
 
     def __validate_cvc(self, cvc: str) -> str:
-        if len(cvc) != 3:
-            raise InvalidCvcException("CVC length must equal 3.")
+        if len(cvc) != self.CVC_LENGTH:
+            raise InvalidCvcException("CVC length must equal", self.CVC_LENGTH)
         if not cvc.isnumeric():
             raise InvalidCvcException("CVC must contain digits only.")
 
         return cvc
 
     def __validate_password(self, password: str) -> str:
-        if len(password) != 4:
-            raise InvalidPasswordException("Password length must equal 4.")
+        if len(password) != self.PASSWORD_LENGTH:
+            raise InvalidPasswordException("Password length must equal", self.PASSWORD_LENGTH)
         if not password.isnumeric():
             raise InvalidPasswordException("Password must contain digits only.")
 
