@@ -87,14 +87,46 @@ class NegativeMoneyAmountException(Exception):
 class NotEnoughMoneyException(Exception):
     pass
 
+# Contains methods for card account
+class ICardAccount:
+    @abstractclassmethod
+    def withdraw_cash(self, amount: Decimal) -> None:
+        pass
+
+    @abstractclassmethod
+    def deposit_cash(self, amount: Decimal) -> None:
+        pass
+
+# Represents the card account
+class CardAccount(ICardAccount):
+    def __init__(self) -> None:
+        self.__balance = Decimal()
+
+    @property
+    def balance(self) -> Decimal:
+        return self.__balance
+    
+    def withdraw_cash(self, amount: Decimal) -> None:
+        if amount < 0:
+            raise NegativeMoneyAmountException("Unable to withdraw negative amount of cash.")
+        if self.balance - amount < 0:
+            raise NotEnoughMoneyException("Card balance doesn't have", amount, "money to withdraw.")
+        self.__balance -= amount
+
+    def deposit_cash(self, amount: Decimal) -> None:
+        if amount < 0:
+            raise NegativeMoneyAmountException("Unable to deposit negative amount of cash.")
+        self.__balance += amount
+
 # Represents bank card model
 class BankCard:
-    def __init__(self, card_number: str, expiration_date: datetime, username: str, cvc: str, password: str) -> None:
+    def __init__(self, card_number: str, expiration_date: datetime, username: str, cvc: str, password: str, card_account: CardAccount) -> None:
         self.__card_number = self.__validate_card_number(card_number)
         self.__expiration_date = expiration_date
         self.__username = username
         self.__cvc = self.__validate_cvc(cvc)
         self.__password = self.__validate_password(password)
+        self.__card_account = card_account
 
     @property
     def card_number(self) -> str:
@@ -115,6 +147,10 @@ class BankCard:
     @property
     def password(self) -> str:
         return self.__password
+        
+    @property
+    def card_account(self) -> CardAccount:
+        return self.__card_account
 
     def __validate_card_number(self, card_number: str) -> str:        
         if len(card_number) != 16:

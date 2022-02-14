@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 import unittest
-from teller_machine import Banknote, InvalidCardNumberException
+from teller_machine import Banknote, CardAccount, InvalidCardNumberException, NotEnoughMoneyException
 from teller_machine import InvalidBanknoteValueException
 from teller_machine import BanknoteStorage
 from teller_machine import NegativeMoneyAmountException
@@ -127,22 +127,44 @@ class TellerMachineTests(unittest.TestCase):
         self.assertEqual(amount_Expected * 2, storage.get_cash_available())
 
     def test_bankcard_card_number_length_does_not_equal_sixteen_raise_an_exception(self):
-        self.assertRaises(InvalidCardNumberException, BankCard, "1111", datetime(2000, 12, 12), "Test User", "1" * 3, "1" * 4)
+        self.assertRaises(InvalidCardNumberException, BankCard, "1111", datetime(2000, 12, 12), "Test User", "1" * 3, "1" * 4, CardAccount())
         
-    def test_bankcard_card_number_contains_not_only_digits_raise_an_exception(self):
-        self.assertRaises(InvalidCardNumberException, BankCard, "A" * 16, datetime(2000, 12, 12), "Test User", "1" * 3, "1" * 4)
+    def test_bankcard_card_number_contains_not_only_digits_raises_an_exception(self):
+        self.assertRaises(InvalidCardNumberException, BankCard, "A" * 16, datetime(2000, 12, 12), "Test User", "1" * 3, "1" * 4, CardAccount())
 
-    def test_bankcard_cvc_length_does_not_equal_three_raise_an_exception(self):
-        self.assertRaises(InvalidCvcException, BankCard, "1" * 16, datetime(2000, 12, 12), "Test User", "1234", "1" * 4)
+    def test_bankcard_cvc_length_does_not_equal_three_raises_an_exception(self):
+        self.assertRaises(InvalidCvcException, BankCard, "1" * 16, datetime(2000, 12, 12), "Test User", "1234", "1" * 4, CardAccount())
         
-    def test_bankcard_cvc_contains_not_only_digits_raise_an_exception(self):
-        self.assertRaises(InvalidCvcException, BankCard, "1" * 16, datetime(2000, 12, 12), "Test User", "12A", "1" * 4)
+    def test_bankcard_cvc_contains_not_only_digits_raises_an_exception(self):
+        self.assertRaises(InvalidCvcException, BankCard, "1" * 16, datetime(2000, 12, 12), "Test User", "12A", "1" * 4, CardAccount())
         
-    def test_bankcard_password_length_does_not_equal_four_raise_an_exception(self):
-        self.assertRaises(InvalidPasswordException, BankCard, "1" * 16, datetime(2000, 12, 12), "Test User", "1" * 3, "123")
+    def test_bankcard_password_length_does_not_equal_four_raises_an_exception(self):
+        self.assertRaises(InvalidPasswordException, BankCard, "1" * 16, datetime(2000, 12, 12), "Test User", "1" * 3, "123", CardAccount())
         
-    def test_bankcard_password_contains_not_only_digits_raise_an_exception(self):
-        self.assertRaises(InvalidPasswordException, BankCard, "1" * 16, datetime(2000, 12, 12), "Test User", "1" * 3, "123A")
+    def test_bankcard_password_contains_not_only_digits_raises_an_exception(self):
+        self.assertRaises(InvalidPasswordException, BankCard, "1" * 16, datetime(2000, 12, 12), "Test User", "1" * 3, "123A", CardAccount())
+
+    def test_cardaccount_withdraw_cash_negative_money_amount_raises_an_exception(self):
+        # Arrange 
+        card_account = CardAccount()
+        
+        # Act, Assert
+        self.assertRaises(NegativeMoneyAmountException, card_account.withdraw_cash, -100)
+        
+    def test_cardaccount_withdraw_cash_not_enought_money_on_balance_raises_an_exception(self):
+        # Arrange 
+        card_account = CardAccount()
+        
+        # Act, Assert
+        self.assertRaises(NotEnoughMoneyException, card_account.withdraw_cash, 100)
+
+    def test_cardaccount_deposit_cash_negative_money_amount_raises_an_exception(self):
+        # Arrange 
+        card_account = CardAccount()
+        
+        # Act, Assert
+        self.assertRaises(NegativeMoneyAmountException, card_account.deposit_cash, -100)
+
 
 if __name__ == "__main__":
     unittest.main()
