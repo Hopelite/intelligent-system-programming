@@ -61,7 +61,7 @@ class BanknoteStorage(IBanknoteStorage):
             return list[Banknote]
         cash_available = self.get_cash_available()
         if cash_available < amount:
-            raise NotEnoughMoneyException("There is not enough money in storage to withdraw", amount)
+            raise NotEnoughMoneyInStorageException("There is not enough money in storage to withdraw", amount)
 
         sorted_Banknotes = sorted(self.__banknotes, reverse=True)
         banknotes_withdrawed = []
@@ -84,7 +84,7 @@ class NegativeMoneyAmountException(Exception):
     pass
 
 # Exception raised when storage doesn't have enough money to withdraw
-class NotEnoughMoneyException(Exception):
+class NotEnoughMoneyInStorageException(Exception):
     pass
 
 # Contains methods for card account
@@ -114,7 +114,7 @@ class CardAccount(ICardAccount):
         if amount < 0:
             raise NegativeMoneyAmountException("Unable to withdraw negative amount of cash.")
         if self.balance - amount < 0:
-            raise NotEnoughMoneyException("Card balance doesn't have", amount, "money to withdraw.")
+            raise NotEnoughMoneyOnBalanceException("Card balance doesn't have", amount, "money to withdraw.")
         self.__balance -= amount
 
     def deposit_cash(self, amount: Decimal) -> None:
@@ -124,6 +124,10 @@ class CardAccount(ICardAccount):
 
     def view_balance(self) -> Decimal:
         return self.__balance
+
+# Exception raised when storage doesn't have enough money to withdraw
+class NotEnoughMoneyOnBalanceException(Exception):
+    pass
 
 # Represents bank card model
 class BankCard:
@@ -206,3 +210,48 @@ class InvalidCvcException(Exception):
 # Exception raised when trying to pass invalid password
 class InvalidPasswordException(Exception):
     pass
+
+# Contains methods for teller machine
+class ITellerMachine:
+    @abstractclassmethod
+    def get_card_balance(self, card: BankCard) -> Decimal:
+        pass
+
+    @abstractclassmethod
+    def withdraw_cash(self, amount: Decimal, card: BankCard) -> list[Banknote]:
+        pass
+
+    @abstractclassmethod
+    def deposit_cash(self, cash: list[Banknote], card: BankCard) -> None:
+        pass
+
+# Implements methods for operationing with teller machine
+class TellerMachie(ITellerMachine):
+    def __init__(self) -> None:
+        self.__storage = BanknoteStorage()
+
+    def get_card_balance(self, card: BankCard) -> Decimal:
+        return card.card_account.view_balance()
+
+    def withdraw_cash(self, amount: Decimal, card: BankCard) -> list[Banknote]:
+        try:
+            card.card_account.withdraw_cash(amount)
+            return self.__storage.withdraw_banknotes(amount)
+        except NegativeMoneyAmountException:
+            print("You cannot withdraw negative money amount")
+        except NotEnoughMoneyOnBalanceException:
+            print("You haven't got enough money to withdraw.")
+        except NotEnoughMoneyInStorageException:
+            print("Sorry, but this ATM doesn't have enough money in storage to withdraw. Please, withdraw smaller amount.")
+
+    def deposit_cash(self, cash: list[Banknote], card: BankCard) -> None:
+        self.__storage.deposit_banknotes(cash)
+        amount = self.__calculate_cash_amount(cash)
+        card.card_account.deposit_cash(amount)
+
+    def __calculate_cash_amount(self, banknotes: list[Banknote]) -> Decimal:
+        cash = Decimal()
+        for banknote in self.__banknotes:
+            cash += banknote.value
+
+        return cash
