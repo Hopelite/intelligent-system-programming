@@ -226,23 +226,24 @@ class ITellerMachine:
         pass
 
 # Implements methods for operationing with teller machine
-class TellerMachie(ITellerMachine):
-    def __init__(self) -> None:
-        self.__storage = BanknoteStorage()
+class TellerMachine(ITellerMachine):
+    def __init__(self, initial_cash: list[Banknote] = []) -> None:
+        self.__storage = BanknoteStorage(initial_cash)
 
     def get_card_balance(self, card: BankCard) -> Decimal:
         return card.card_account.view_balance()
 
     def withdraw_cash(self, amount: Decimal, card: BankCard) -> list[Banknote]:
         try:
+            banknotes = self.__storage.withdraw_banknotes(amount)
             card.card_account.withdraw_cash(amount)
-            return self.__storage.withdraw_banknotes(amount)
+            return banknotes
         except NegativeMoneyAmountException:
             print("You cannot withdraw negative money amount")
+        except NotEnoughMoneyInStorageException:
+            print("Sorry, but this ATM doesn't have enough money in storage to withdraw. Please, request smaller amount.")
         except NotEnoughMoneyOnBalanceException:
             print("You haven't got enough money to withdraw.")
-        except NotEnoughMoneyInStorageException:
-            print("Sorry, but this ATM doesn't have enough money in storage to withdraw. Please, withdraw smaller amount.")
 
     def deposit_cash(self, cash: list[Banknote], card: BankCard) -> None:
         self.__storage.deposit_banknotes(cash)
@@ -251,7 +252,7 @@ class TellerMachie(ITellerMachine):
 
     def __calculate_cash_amount(self, banknotes: list[Banknote]) -> Decimal:
         cash = Decimal()
-        for banknote in self.__banknotes:
+        for banknote in banknotes:
             cash += banknote.value
 
         return cash
