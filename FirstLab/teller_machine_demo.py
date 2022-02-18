@@ -19,7 +19,7 @@ def start_work(bank_card: BankCard) -> None:
     work_with_card(user_interface)
 
 def work_with_card(user_interface: ITellerMachineUI) -> None:
-    user_choise = input("\n1) View balance\n2) Deposit cash\n3) Withdraw cash\n4) Withdraw card\nInput: ")
+    user_choise = input("\n1) View balance\n2) Deposit cash\n3) Withdraw cash\n4) Pay for the phone\n5) Withdraw card\nInput: ")
     
     if user_choise == '1':
         user_interface.get_card_balance()
@@ -27,6 +27,8 @@ def work_with_card(user_interface: ITellerMachineUI) -> None:
         user_interface.deposit_cash()
     elif user_choise == '3':
         user_interface.withdraw_cash()
+    elif user_choise == '4':
+        user_interface.pay_for_the_phone()
     else:
         return
     

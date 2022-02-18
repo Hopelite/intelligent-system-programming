@@ -43,10 +43,6 @@ class IBanknoteStorage:
     def deposit_banknotes(self, banknotes: list[Banknote]) -> None:
         pass
 
-    @abstractclassmethod
-    def pay_for_the_phone(self, phone_number: str, amout: Decimal) -> None:
-        pass
-
 # Implements methods for operationing with banknotes storage
 class BanknoteStorage(IBanknoteStorage):
     def __init__(self, banknotes: list[Banknote] = []) -> None:
@@ -239,6 +235,10 @@ class ITellerMachine:
     def deposit_cash(self, cash: list[Banknote], card: BankCard) -> Decimal:
         pass
 
+    @abstractclassmethod
+    def pay_for_the_phone(self, phone_number: str, amount: Decimal, card: BankCard) -> None:
+        pass
+
 # Implements methods for operationing with teller machine
 class TellerMachine(ITellerMachine):
     def __init__(self, initial_cash: list[Banknote] = []) -> None:
@@ -264,6 +264,13 @@ class TellerMachine(ITellerMachine):
         amount = self.__calculate_cash_amount(cash)
         card.card_account.deposit_cash(amount)
         return amount
+
+    def pay_for_the_phone(self, phone_number: str, amount: Decimal, card: BankCard) -> None:
+        if self.get_card_balance(card) < amount:
+            print("You haven't got enough money.")
+        else:
+            card.card_account.withdraw_cash(amount)
+            print("Successfully paid for the phone.")
 
     def __calculate_cash_amount(self, banknotes: list[Banknote]) -> Decimal:
         cash = Decimal()
@@ -291,7 +298,11 @@ class ITellerMachineUI:
         pass
 
     @abstractclassmethod
-    def deposit_cash(self, cash: list[Banknote]) -> None:
+    def deposit_cash(self) -> None:
+        pass
+    
+    @abstractclassmethod
+    def pay_for_the_phone(self) -> None:
         pass
 
 # Implements teller machine user interface
@@ -343,6 +354,14 @@ class TellerMachineUI:
 
             deposited = self.__teller_machine.deposit_cash(banknotes, self.__card_inserted)
             print("Successfully deposited", deposited)
+
+    def pay_for_the_phone(self) -> None:
+        if self.__card_inserted == None:
+            print("ATM has no card inserted.")
+        else:
+            phone_number = input("Enter phone number: ")
+            amount = Decimal(input("Enter the amount of cash you want to pay: "))
+            self.__teller_machine.pay_for_the_phone(phone_number, amount, self.__card_inserted)
 
     def __str_to_banknotes(self, string: str) -> list[Banknote]:
         string_values = string.split()
