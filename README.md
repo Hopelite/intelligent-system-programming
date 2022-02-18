@@ -1,4 +1,4 @@
-# intelligent-system-programming
+# Program Design in Intelligent Systems
 
 Repository for laboratory tasks on the discipline **"Program Design in Intelligent Systems"**.
 
