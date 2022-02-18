@@ -16,13 +16,13 @@ class Banknote:
     def __str__(self) -> str:
         return self.value.__str__()
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         return self.value < other.value
         
-    def __gt__(self, other):
+    def __gt__(self, other) -> bool:
         return self.value > other.value
         
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.value == other.value
 
 # Exception raised when trying to pass invalid banknote value
@@ -167,43 +167,43 @@ class BankCard:
         return self.__card_account
 
     @property
-    def CARD_LENGTH(self):
+    def __CARD_LENGTH(self) -> int:
         return 16
         
     @property
-    def CVC_LENGTH(self):
+    def __CVC_LENGTH(self) -> int:
         return 3
         
     @property
-    def PASSWORD_LENGTH(self):
+    def __PASSWORD_LENGTH(self) -> int:
         return 4
 
     def __str__(self) -> str:
         return "Card number: " + self.card_number + \
-               "\nExpiration date: " + self.expiration_date.__str__() + \
+               "\nExpiration date: " + self.expiration_date.year.__str__() + "/" + self.expiration_date.month.__str__() + \
                "\nUser name: " + self.username + \
                "\nCVC: " + self.cvc + \
                "\nPassword: " + self.password
 
     def __validate_card_number(self, card_number: str) -> str:        
-        if len(card_number) != self.CARD_LENGTH:
-            raise InvalidCardNumberException("Card number length must equal,", self.CARD_LENGTH)
+        if len(card_number) != self.__CARD_LENGTH   :
+            raise InvalidCardNumberException("Card number length must equal,", self.__CARD_LENGTH)
         if not card_number.isnumeric():
             raise InvalidCardNumberException("Card number must contain digits only.")
 
         return card_number
 
     def __validate_cvc(self, cvc: str) -> str:
-        if len(cvc) != self.CVC_LENGTH:
-            raise InvalidCvcException("CVC length must equal", self.CVC_LENGTH)
+        if len(cvc) != self.__CVC_LENGTH:
+            raise InvalidCvcException("CVC length must equal", self.__CVC_LENGTH)
         if not cvc.isnumeric():
             raise InvalidCvcException("CVC must contain digits only.")
 
         return cvc
 
     def __validate_password(self, password: str) -> str:
-        if len(password) != self.PASSWORD_LENGTH:
-            raise InvalidPasswordException("Password length must equal", self.PASSWORD_LENGTH)
+        if len(password) != self.__PASSWORD_LENGTH:
+            raise InvalidPasswordException("Password length must equal", self.__PASSWORD_LENGTH)
         if not password.isnumeric():
             raise InvalidPasswordException("Password must contain digits only.")
 
@@ -350,6 +350,9 @@ class TellerMachineUI:
                 banknotes = self.__str_to_banknotes(banknotes_string)
             except InvalidOperation:
                 print("Invalid banknote value passed. Please, specify only numeric values.")
+                return self.deposit_cash()
+            except InvalidBanknoteValueException:
+                print("Invalid banknote value passed. Please, specify only positive numeric values.")
                 return self.deposit_cash()
 
             deposited = self.__teller_machine.deposit_cash(banknotes, self.__card_inserted)
