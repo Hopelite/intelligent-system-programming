@@ -15,8 +15,8 @@ def main(bank_card: BankCard) -> None:
         return
 
 def start_work(bank_card: BankCard) -> None:
-    user_interface.insert_card(bank_card)
-    work_with_card(user_interface)
+    if user_interface.insert_card(bank_card):
+        work_with_card(user_interface)
 
 def work_with_card(user_interface: ITellerMachineUI) -> None:
     user_choise = input("\n1) View balance\n2) Deposit cash\n3) Withdraw cash\n4) Pay for the phone\n5) Withdraw card\nInput: ")
