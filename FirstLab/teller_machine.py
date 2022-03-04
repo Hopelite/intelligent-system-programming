@@ -56,9 +56,9 @@ class JsonFileBanknoteStorage(IStorage[list[Banknote]]):
 
     def load(self) -> Decimal:
         banknotes_dictionary = self.__storage.load()
-        return self.convert_dict_to_banknotes(banknotes_dictionary)
+        return self.__convert_dict_to_banknotes(banknotes_dictionary)
         
-    def convert_dict_to_banknotes(self, dict) -> list[Banknote]:
+    def __convert_dict_to_banknotes(self, dict) -> list[Banknote]:
         banknotes = []
         for data in dict:
             banknotes.append(Banknote(int(data)))
