@@ -1,6 +1,5 @@
 from datetime import date
 from decimal import Decimal
-import teller_machine
 from teller_machine import BankCard, Banknote, CardAccount, ITellerMachineUI, TellerMachine, TellerMachineUI
 
 def main(bank_card: BankCard) -> None:
@@ -15,8 +14,8 @@ def main(bank_card: BankCard) -> None:
         return
 
 def start_work(bank_card: BankCard) -> None:
-    user_interface.insert_card(bank_card)
-    work_with_card(user_interface)
+    if user_interface.insert_card(bank_card):
+        work_with_card(user_interface)
 
 def work_with_card(user_interface: ITellerMachineUI) -> None:
     user_choise = input("\n1) View balance\n2) Deposit cash\n3) Withdraw cash\n4) Pay for the phone\n5) Withdraw card\nInput: ")
@@ -44,7 +43,7 @@ def deposit_cash(user_interface: ITellerMachineUI):
 
 if __name__ == "__main__":
     card_account = CardAccount()
-    initial_balance = Decimal(20)
+    initial_balance = Decimal(500)
     card_account.deposit_cash(initial_balance)
 
     card = BankCard(
@@ -55,19 +54,7 @@ if __name__ == "__main__":
                 password="1111",
                 card_account=card_account)
 
-    initial_cash = [Banknote(5),
-                    Banknote(5),
-                    Banknote(5),
-                    Banknote(10),
-                    Banknote(10),
-                    Banknote(20),
-                    Banknote(20),
-                    Banknote(50),
-                    Banknote(50),
-                    Banknote(100)]
-    teller_machine = TellerMachine(initial_cash)
-    user_interface = TellerMachineUI(teller_machine)
-
+    user_interface = TellerMachineUI(TellerMachine())
     user_banknotes = [Banknote(5), Banknote(15), Banknote(10), Banknote(20)]
 
     main(card)
