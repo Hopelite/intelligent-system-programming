@@ -38,6 +38,9 @@ class JsonEncoder(JSONEncoder):
         return str(o)
 
 class InMemoryStorage(IStorage[T]):
+    def __init__(self, data: T) -> None:
+        self.__data = data
+
     def save(self, data: T) -> None:
         self.__data = data
         

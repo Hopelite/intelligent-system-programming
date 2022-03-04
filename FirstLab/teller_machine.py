@@ -45,6 +45,25 @@ class IBanknoteStorage(ABC):
     @abstractmethod
     def deposit_banknotes(self, banknotes: list[Banknote]) -> None:
         pass
+    
+class JsonFileBanknoteStorage(IStorage[list[Banknote]]):
+    """Decorates JsonFileStorage so it's able to convert string to banknotes."""
+    def __init__(self, storage: IStorage[list[Banknote]]) -> None:
+        self.__storage = storage
+
+    def save(self, data: list[Banknote]) -> None:
+        self.__storage.save(data)
+
+    def load(self) -> Decimal:
+        banknotes_dictionary = self.__storage.load()
+        return self.convert_dict_to_banknotes(banknotes_dictionary)
+        
+    def convert_dict_to_banknotes(self, dict) -> list[Banknote]:
+        banknotes = []
+        for data in dict:
+            banknotes.append(Banknote(int(data)))
+
+        return banknotes
 
 class BanknoteStorage(IBanknoteStorage):
     """Implements methods for operationing with banknotes storage."""
@@ -53,8 +72,8 @@ class BanknoteStorage(IBanknoteStorage):
         
     def get_cash_available(self) -> Decimal:
         """Calculates the sum of all banknotes values in storage."""
-        banknotes_dictionary = self.__storage.load()
-        banknotes = self.convert_dict_to_banknotes(banknotes_dictionary)
+        
+        banknotes = self.__storage.load()
 
         amount = Decimal()
         for banknote in banknotes:
@@ -71,8 +90,7 @@ class BanknoteStorage(IBanknoteStorage):
         if cash_available < amount:
             raise NotEnoughMoneyInStorageException("There is not enough money in storage to withdraw", amount)
 
-        banknotes_available_dictionary = self.__storage.load()
-        banknotes_available = self.convert_dict_to_banknotes(banknotes_available_dictionary)
+        banknotes_available = self.__storage.load()
 
         banknotes_withdrawed = self.__make_change_algorithm(banknotes_available, amount)
         self.__storage.save(banknotes_available)
@@ -93,16 +111,9 @@ class BanknoteStorage(IBanknoteStorage):
 
     def deposit_banknotes(self, banknotes: list[Banknote]) -> None:
         """Deposits banknotes to storage."""
-        banknotes_available = self.convert_dict_to_banknotes(self.__storage.load())
+        banknotes_available = self.__storage.load()
         banknotes_available.extend(banknotes)
         self.__storage.save(banknotes_available)
-
-    def convert_dict_to_banknotes(self, dict) -> list[Banknote]:
-        banknotes = []
-        for data in dict:
-            banknotes.append(Banknote(int(data)))
-
-        return banknotes
 
 class AmountValidator:
     @staticmethod
@@ -251,7 +262,8 @@ class TellerMachine(ITellerMachine):
     """Implements methods for operationing with teller machine."""
     def __init__(self) -> None:
         json_file_storage = JsonFileStorage[list[Banknote]]("atm_data.json")
-        self.__storage = BanknoteStorage(json_file_storage)
+        banknote_file_storage = JsonFileBanknoteStorage(json_file_storage)
+        self.__storage = BanknoteStorage(banknote_file_storage)
 
     def get_card_balance(self, card: BankCard) -> Decimal:
         return card.card_account.view_balance()

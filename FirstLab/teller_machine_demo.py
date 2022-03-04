@@ -1,6 +1,5 @@
 from datetime import date
 from decimal import Decimal
-import teller_machine
 from teller_machine import BankCard, Banknote, CardAccount, ITellerMachineUI, TellerMachine, TellerMachineUI
 
 def main(bank_card: BankCard) -> None:
