@@ -394,8 +394,15 @@ class TellerMachineUI:
             print("ATM has no card inserted.")
         else:
             phone_number = input("Enter phone number: ")
-            amount = Decimal(input("Enter the amount of cash you want to pay: "))
-            self.__teller_machine.pay_for_the_phone(phone_number, amount, self.__card_inserted)
+            try:
+                amount = Decimal(input("Enter the amount of cash you want to pay: "))
+                if amount < 0:
+                    print("You cannot specify negative money amount.")
+                    return
+
+                self.__teller_machine.pay_for_the_phone(phone_number, amount, self.__card_inserted)
+            except InvalidOperation:
+                print("Invalid amount passed. Please, specify only numeric values.")
 
     def __str_to_banknotes(self, string: str) -> list[Banknote]:
         string_values = string.split()
