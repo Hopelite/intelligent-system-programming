@@ -181,35 +181,5 @@ class TellerMachineTests(unittest.TestCase):
         # Assert
         self.assertEqual(expected, actual)
 
-    def test_tellermachine_get_card_balance_returns_card_balance(self):
-        # Arrange
-        teller_machine = TellerMachine()
-        expected = Decimal(10)
-        card_account = CardAccount()
-        card_account.deposit_cash(expected)
-        bank_card = BankCard('1' * 16, datetime.now(), "Test User", "111", "1111", card_account)
-
-        # Act
-        actual = teller_machine.get_card_balance(bank_card)
-
-        # Assert
-        self.assertEqual(expected, actual)
-        
-    def test_tellermachine_withdraw_cash_returns_cash(self):
-        # Arrange
-        banknotes = [Banknote(15), Banknote(20), Banknote(50), Banknote(25), Banknote(25)]
-        teller_machine = TellerMachine(banknotes)
-        amount = Decimal(100)
-        card_account = CardAccount()
-        card_account.deposit_cash(amount)
-        bank_card = BankCard('1' * 16, datetime.now(), "Test User", "111", "1111", card_account)
-        expected = [Banknote(50), Banknote(25), Banknote(25)]
-
-        # Act
-        actual = teller_machine.withdraw_cash(amount, bank_card)
-
-        # Assert
-        self.assertEqual(expected, actual)
-
 if __name__ == "__main__":
     unittest.main()

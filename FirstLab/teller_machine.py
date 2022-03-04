@@ -1,10 +1,11 @@
-from abc import abstractclassmethod
+from abc import ABC, abstractmethod
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
 from teller_machine_exceptions import InvalidBanknoteValueException, InvalidCardNumberException, InvalidCvcException, InvalidPasswordException, NegativeMoneyAmountException, NotEnoughMoneyInStorageException, NotEnoughMoneyOnBalanceException
+from data_storage import IStorage, JsonFileStorage
 
-# Represents the banknote model
 class Banknote:
+    """Represents the banknote model."""
     def __init__(self, value: Decimal) -> None:
         self.__value = BanknoteValidator.validate_value(value)
 
@@ -31,38 +32,38 @@ class BanknoteValidator:
             raise InvalidBanknoteValueException("Unable to create a banknote with value that is negative or equals zero.")
         return value
 
-# Contains methods for banknote storage
-class IBanknoteStorage:
-    @classmethod
-    @abstractclassmethod
+class IBanknoteStorage(ABC):
+    """Contains methods for banknote storage."""
+    @abstractmethod
     def get_cash_available(self) -> Decimal:
         pass
 
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def withdraw_banknotes(self, amount: Decimal) -> list[Banknote]:
         pass
     
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def deposit_banknotes(self, banknotes: list[Banknote]) -> None:
         pass
 
-# Implements methods for operationing with banknotes storage
 class BanknoteStorage(IBanknoteStorage):
-    def __init__(self, banknotes: list[Banknote] = []) -> None:
-        self.__banknotes = banknotes
+    """Implements methods for operationing with banknotes storage."""
+    def __init__(self, storage: IStorage[list[Banknote]]) -> None:
+        self.__storage = storage
         
-    # Calculates the sum of all banknotes values in storage 
     def get_cash_available(self) -> Decimal:
+        """Calculates the sum of all banknotes values in storage."""
+        banknotes_dictionary = self.__storage.load()
+        banknotes = self.convert_dict_to_banknotes(banknotes_dictionary)
+
         amount = Decimal()
-        for banknote in self.__banknotes:
+        for banknote in banknotes:
             amount += banknote.value
 
         return amount
 
-    # Withdraws banknotes from storage with an amount equal specified or the nearest available to it, if storage doesn't have small enough values
     def withdraw_banknotes(self, amount: Decimal) -> list[Banknote]:
+        """Withdraws banknotes from storage with an amount equal specified or the closest available to it, if storage doesn't have small enough values."""
         AmountValidator.validate_amount(amount)
         if amount == 0:
             return list[Banknote]
@@ -70,7 +71,15 @@ class BanknoteStorage(IBanknoteStorage):
         if cash_available < amount:
             raise NotEnoughMoneyInStorageException("There is not enough money in storage to withdraw", amount)
 
-        sorted_Banknotes = sorted(self.__banknotes, reverse=True)
+        banknotes_available_dictionary = self.__storage.load()
+        banknotes_available = self.convert_dict_to_banknotes(banknotes_available_dictionary)
+
+        banknotes_withdrawed = self.__make_change_algorithm(banknotes_available, amount)
+        self.__storage.save(banknotes_available)
+        return banknotes_withdrawed
+
+    def __make_change_algorithm(self, banknotes_available: list[Banknote], amount: Decimal) -> list[Banknote]:
+        sorted_Banknotes = sorted(banknotes_available, reverse=True)
         banknotes_withdrawed = []
         current_amount = Decimal()
         while current_amount != amount and len(sorted_Banknotes) > 0:
@@ -78,13 +87,22 @@ class BanknoteStorage(IBanknoteStorage):
             if current_amount + current_banknote.value <= amount:
                 current_amount += current_banknote.value
                 banknotes_withdrawed.append(current_banknote)
-                self.__banknotes.remove(current_banknote)
-        
+                banknotes_available.remove(current_banknote)
+
         return banknotes_withdrawed
 
-    # Deposits banknotes to storage
     def deposit_banknotes(self, banknotes: list[Banknote]) -> None:
-        self.__banknotes.extend(banknotes)
+        """Deposits banknotes to storage."""
+        banknotes_available = self.convert_dict_to_banknotes(self.__storage.load())
+        banknotes_available.extend(banknotes)
+        self.__storage.save(banknotes_available)
+
+    def convert_dict_to_banknotes(self, dict) -> list[Banknote]:
+        banknotes = []
+        for data in dict:
+            banknotes.append(Banknote(int(data)))
+
+        return banknotes
 
 class AmountValidator:
     @staticmethod
@@ -92,25 +110,22 @@ class AmountValidator:
         if amount < 0:
             raise NegativeMoneyAmountException("Unable to withdraw negative amount of cash.")
 
-# Contains methods for card account
 class ICardAccount:
-    @classmethod
-    @abstractclassmethod
+    """Contains methods for card account."""
+    @abstractmethod
     def withdraw_cash(self, amount: Decimal) -> None:
         pass
 
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def deposit_cash(self, amount: Decimal) -> None:
         pass
 
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def view_balance(self) -> Decimal:
         pass
 
-# Represents the card account
 class CardAccount(ICardAccount):
+    """Represents the card account."""
     def __init__(self) -> None:
         self.__balance = Decimal()
 
@@ -133,6 +148,7 @@ class CardAccount(ICardAccount):
         return self.__balance
 
 class BankCardValidator:
+    """Contains validation methods for the BankCard."""
     @staticmethod
     def __CARD_LENGTH() -> int:
         return 16
@@ -172,8 +188,8 @@ class BankCardValidator:
 
         return password
 
-# Represents bank card model
 class BankCard:
+    """Represents bank card model."""
     def __init__(self, card_number: str, expiration_date: datetime, username: str, cvc: str, password: str, card_account: ICardAccount) -> None:
         self.__card_number = BankCardValidator.validate_card_number(card_number)
         self.__expiration_date = expiration_date
@@ -213,32 +229,29 @@ class BankCard:
                "\nCVC: " + self.cvc + \
                "\nPassword: " + self.password
 
-# Contains methods for teller machine
-class ITellerMachine:
-    @classmethod
-    @abstractclassmethod
+class ITellerMachine(ABC):
+    """Contains methods for teller machine."""
+    @abstractmethod
     def get_card_balance(self, card: BankCard) -> Decimal:
         pass
     
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def withdraw_cash(self, amount: Decimal, card: BankCard) -> list[Banknote]:
         pass
 
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def deposit_cash(self, cash: list[Banknote], card: BankCard) -> Decimal:
         pass
 
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def pay_for_the_phone(self, phone_number: str, amount: Decimal, card: BankCard) -> None:
         pass
 
-# Implements methods for operationing with teller machine
 class TellerMachine(ITellerMachine):
-    def __init__(self, initial_cash: list[Banknote] = []) -> None:
-        self.__storage = BanknoteStorage(initial_cash)
+    """Implements methods for operationing with teller machine."""
+    def __init__(self) -> None:
+        json_file_storage = JsonFileStorage[list[Banknote]]("atm_data.json")
+        self.__storage = BanknoteStorage(json_file_storage)
 
     def get_card_balance(self, card: BankCard) -> Decimal:
         return card.card_account.view_balance()
@@ -277,40 +290,34 @@ class TellerMachine(ITellerMachine):
 
         return cash
 
-# Contains methods for teller machine user interface
 class ITellerMachineUI:
-    @classmethod
-    @abstractclassmethod
+    """Contains methods for teller machine user interface."""
+    @abstractmethod
     def insert_card(self, bank_card: BankCard) -> bool:
         pass
     
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def withdraw_card(self) -> BankCard:
         pass
 
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def get_card_balance(self) -> None:
         pass
 
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def withdraw_cash(self) -> list[Banknote]:
         pass
 
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def deposit_cash(self) -> None:
         pass
     
-    @classmethod
-    @abstractclassmethod
+    @abstractmethod
     def pay_for_the_phone(self) -> None:
         pass
 
-# Implements teller machine user interface
 class TellerMachineUI:
+    """Implements teller machine user interface."""
     def __init__(self, teller_machine: ITellerMachine) -> None:
         self.__teller_machine = teller_machine
         self.__card_inserted = None

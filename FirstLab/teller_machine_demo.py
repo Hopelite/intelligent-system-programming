@@ -44,7 +44,7 @@ def deposit_cash(user_interface: ITellerMachineUI):
 
 if __name__ == "__main__":
     card_account = CardAccount()
-    initial_balance = Decimal(20)
+    initial_balance = Decimal(500)
     card_account.deposit_cash(initial_balance)
 
     card = BankCard(
@@ -55,19 +55,7 @@ if __name__ == "__main__":
                 password="1111",
                 card_account=card_account)
 
-    initial_cash = [Banknote(5),
-                    Banknote(5),
-                    Banknote(5),
-                    Banknote(10),
-                    Banknote(10),
-                    Banknote(20),
-                    Banknote(20),
-                    Banknote(50),
-                    Banknote(50),
-                    Banknote(100)]
-    teller_machine = TellerMachine(initial_cash)
-    user_interface = TellerMachineUI(teller_machine)
-
+    user_interface = TellerMachineUI(TellerMachine())
     user_banknotes = [Banknote(5), Banknote(15), Banknote(10), Banknote(20)]
 
     main(card)

@@ -27,7 +27,7 @@ class JsonFileStorage(IStorage[T]):
         with open(self.__path, 'w') as file:
             file.write(serialized_data)
 
-    def load(self) -> T:
+    def load(self):
         with open(self.__path, 'r') as file:
             deserialized_data = json.load(file)
 
@@ -35,4 +35,11 @@ class JsonFileStorage(IStorage[T]):
 
 class JsonEncoder(JSONEncoder):
     def default(self, o):
-        return o.__dict__
+        return str(o)
+
+class InMemoryStorage(IStorage[T]):
+    def save(self, data: T) -> None:
+        self.__data = data
+        
+    def load(self) -> T:
+        return self.__data
