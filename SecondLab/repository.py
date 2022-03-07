@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from html import entities
 from typing import TypeVar, Generic
 from models import IIdentifiable
 from data_storage import IStorage
@@ -20,11 +21,6 @@ class IRepository(ABC, Generic[T]):
     @abstractmethod
     def add(self, entity: T) -> None:
         """Adds the entity to repository."""
-        pass
-    
-    @abstractmethod
-    def delete(self, entity: T) -> None:
-        """Removes entity from repository."""
         pass
     
     @abstractmethod
@@ -60,18 +56,18 @@ class Repository(IRepository[T]):
         entities.append(entity)
         self.__storage.save(entities)
 
-    def delete(self, entity: T) -> None:
-        return self.delete(entity.id)
-
     def delete(self, entity_id: int) -> None:
         if not self.__contains(entity_id):
             raise EntityDoesNotExistException("Unable to delete entity: an entity with this ID does not exist in this repository.")
+        
+        entities = [entity for entity in self.get_all() if entity.id != entity_id]
+        self.__storage.save(entities)
 
     def update(self, entity: T) -> None:
         if not self.__contains(entity.id):
             raise EntityDoesNotExistException("Unable to update entity: an entity with this ID does not exist in this repository.")
         
-        self.delete(entity)
+        self.delete(entity.id)
         self.add(entity)
 
     def __contains(self, id: int) -> bool:
