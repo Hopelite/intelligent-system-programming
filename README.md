@@ -4,3 +4,4 @@ Repository for laboratory tasks on the discipline **"Program Design in Intellige
 
 Laboratory tasks:
 1. [ATM Model](https://github.com/Hopelite/intelligent-system-programming/tree/main/FirstLab)
+2. [Hospital](https://github.com/Hopelite/intelligent-system-programming/tree/main/SecondLab)
