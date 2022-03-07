@@ -3,7 +3,7 @@ from patient import Patient
 from doctor import Doctor
 
 class Appointment:
-    """Represents doctor's appointment."""
+    """Represents the doctor's appointment."""
     def __init__(self,
         patient: Patient,
         appointent_date: date,
