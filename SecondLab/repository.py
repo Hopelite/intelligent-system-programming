@@ -3,7 +3,7 @@ from typing import TypeVar, Generic
 from models import IIdentifiable
 from data_storage import IStorage
 
-T = TypeVar('T', IIdentifiable)
+T = TypeVar('T', bound=IIdentifiable)
 
 class IRepository(ABC, Generic[T]):
     """Contains methods for operating with specific type data."""
