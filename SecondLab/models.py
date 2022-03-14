@@ -1,5 +1,6 @@
 from abc import ABC
 from datetime import date
+from pydoc import doc
 
 class IIdentifiable(ABC):
     """Makes model identifiable by ID property."""
@@ -100,7 +101,7 @@ class Appointment(IIdentifiable):
         doctor_id: int,
         conclusion: str) -> None:
         self.id = id
-        self.patient = patient_id
+        self.patient_id = patient_id
         self.appointent_date = appointent_date
         self.doctor_id = doctor_id
         self.conclusion = conclusion
@@ -128,6 +129,70 @@ class Appointment(IIdentifiable):
     @doctor_id.setter
     def doctor_id(self, value: int):
         self.__doctor_id = value
+
+    @property
+    def conclusion(self) -> str:
+        return self.__conclusion
+
+    @conclusion.setter
+    def conclusion(self, value: str):
+        self.__conclusion = value
+
+class ViewAppointment:
+    """Represents appointment model for view."""
+    def __init__(self,
+        patient_name: str,
+        patient_address: str,
+        patient_date_of_birth: date,
+        appointent_date: date,
+        doctor_name: str,
+        conclusion: str) -> None:
+        self.patient_name = patient_name
+        self.patient_address = patient_address
+        self.patient_date_of_birth = patient_date_of_birth
+        self.appointent_date = appointent_date
+        self.doctor_name = doctor_name
+        self.conclusion = conclusion
+        
+    @property
+    def patient_name(self) -> str:
+        return self.__patient_name
+
+    @patient_name.setter
+    def patient_name(self, value: str):
+        self.__patient_name = value
+        
+    @property
+    def patient_address(self) -> str:
+        return self.__patient_address
+
+    @patient_address.setter
+    def patient_address(self, value: str):
+        self.__patient_address = value
+        
+    @property
+    def patient_date_of_birth(self) -> date:
+        return self.__patient_date_of_birth
+
+    @patient_date_of_birth.setter
+    def patient_date_of_birth(self, value: date):
+        self.__patient_date_of_birth = value
+        
+    @property
+    def appointent_date(self) -> date:
+        return self.__appointent_date
+
+    @appointent_date.setter
+    def appointent_date(self, value: date):
+        self.__appointent_date = value
+        
+    @property
+    def doctor_name(self) -> str:
+        return self.__doctor_name
+
+    @doctor_name.setter
+    def doctor_name(self, value: str):
+        self.__doctor_name = value
 
     @property
     def conclusion(self) -> str:
