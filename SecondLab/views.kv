@@ -1,4 +1,4 @@
-#:kivy 0.4.5
+#:kivy 2.1.0
 
 <ScreenLayout>:
     BoxLayout:
@@ -12,8 +12,16 @@
             title: 'Hospital'
             with_previous: False
 
-        ActionButton:
+        ActionGroup:
             text: 'Add'
+            mode: 'spinner'
+
+            ActionButton:
+                text: 'Doctor'
+            ActionButton:
+                text: 'Patient'
+            ActionButton:
+                text: 'Appoinment'
         
         ActionButton:
             text: 'Find'
