@@ -1,6 +1,5 @@
 from abc import ABC
 from datetime import date
-from pydoc import doc
 
 class IIdentifiable(ABC):
     """Makes model identifiable by ID property."""

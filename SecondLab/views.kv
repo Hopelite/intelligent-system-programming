@@ -1,5 +1,36 @@
 #:kivy 2.1.0
 
+<TableScreen>:
+    FloatLayout:
+        size: root.width, root.height
+
+<Table>:
+    rows: 11
+    cols: 6
+    
+    canvas.before:
+        Color:
+            rgb: 255, 255, 255
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    TableCell:
+        text: 'ФИО пациента'
+    TableCell:
+        text: 'Адрес прописки'
+    TableCell:
+        text: 'Дата рождения'
+    TableCell:
+        text: 'Дата приема'
+    TableCell:
+        text: 'ФИО врача'
+    TableCell:
+        text: 'Заключение'
+    
+<TableCell>:
+    color: 0, 0, 0, 1
+
 <ScreenLayout>:
     BoxLayout:
         orientation: 'vertical'
@@ -7,6 +38,8 @@
         LayoutActionBar:
 
 <LayoutActionBar>:
+    pos: 0, 0
+
     ActionView:        
         ActionPrevious:
             title: 'Hospital'
