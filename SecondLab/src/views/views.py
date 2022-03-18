@@ -1,9 +1,8 @@
-from datetime import date
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 from kivy.uix.actionbar import ActionBar
 from kivy.uix.gridlayout import GridLayout
-from models import ViewAppointment
+from src.persistence.models import ViewAppointment
 
 class ScreenLayout(Screen):
     pass
@@ -12,10 +11,9 @@ class LayoutActionBar(ActionBar):
     pass
 
 class TableScreen(Screen):
-    def __init__(self, **kw):
+    def __init__(self, appointments: list[ViewAppointment], **kw):
         super().__init__(**kw)
-        appointments = [ViewAppointment('Vadim', 'Minsk', date(2003, 2, 12), date(2022, 2, 12), 'Dr. Who', 'Help me'), ViewAppointment('Vadim', 'Minsk', date(2003, 2, 12), date(2022, 2, 12), 'Dr. Who', 'Help me'), ViewAppointment('Vadim', 'Minsk', date(2003, 2, 12), date(2022, 2, 12), 'Dr. Who', 'Help me'), ViewAppointment('Vadim', 'Minsk', date(2003, 2, 12), date(2022, 2, 12), 'Dr. Who', 'Help me'), ViewAppointment('Vadim', 'Minsk', date(2003, 2, 12), date(2022, 2, 12), 'Dr. Who', 'Help me'), ViewAppointment('Vadim', 'Minsk', date(2003, 2, 12), date(2022, 2, 12), 'Dr. Who', 'Help me'), ViewAppointment('Vadim', 'Minsk', date(2003, 2, 12), date(2022, 2, 12), 'Dr. Who', 'Help me'), ViewAppointment('Vadim', 'Minsk', date(2003, 2, 12), date(2022, 2, 12), 'Dr. Who', 'Help me')]
-        self.add_widget(Table(appointments=appointments))
+        self.add_widget(Table(appointments))
         self.add_widget(LayoutActionBar())
 
 class Table(GridLayout):

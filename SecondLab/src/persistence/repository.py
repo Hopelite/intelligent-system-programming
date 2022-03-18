@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from html import entities
 from typing import TypeVar, Generic
-from models import IIdentifiable
-from data_storage import IStorage
+from src.persistence.models import IIdentifiable
+from src.persistence.data_storage import IStorage
 
 T = TypeVar('T', bound=IIdentifiable)
 

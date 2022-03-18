@@ -1,13 +1,13 @@
 from kivy.app import App
-from views import TableScreen
+from src.controllers.controllers import ViewAppointmentsController
 from kivy.lang import Builder
 
-Builder.load_file("views.kv")
+Builder.load_file("src/views/views.kv")
 
 class Program(App):
 
     def build(self):
-        return TableScreen()
+        return ViewAppointmentsController().get_table()
         
 if __name__ == '__main__':
     Program().run()
