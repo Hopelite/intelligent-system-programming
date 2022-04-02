@@ -31,13 +31,7 @@
 <TableCell>:
     color: 0, 0, 0, 1
 
-<ScreenLayout>:
-    BoxLayout:
-        orientation: 'vertical'
-
-        LayoutActionBar:
-
-<LayoutActionBar>:
+<TableScreenActionBar>:
     pos: 0, 0
 
     ActionView:        
@@ -58,6 +52,51 @@
         
         ActionButton:
             text: 'Find'
+            on_press: app.screen_manager.current = 'search_screen'
             
         ActionButton:
             text: 'Delete'
+
+<InputRow@BoxLayout>:
+    orientation: 'horizontal'
+    label_text: 'Enter Label Text'
+    label_id: label
+    text_input_id: text_input
+
+    Label:
+        id: label
+        text: root.label_text
+    TextInput:
+        id: text_input
+
+<SearchScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        InputRow:
+            id: input
+            label_text: "Patient's Name"
+
+        Button:
+            text: 'Search'
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: "Find by patient name"
+                on_press: input.label_id.text = "Patient's Name"
+                
+            Button:
+                text: "Find by patient's address"
+                on_press: input.label_id.text = "Patient's Address"
+        
+        BoxLayout:
+            orientation: 'horizontal'
+                
+            Button:
+                text: "Find by doctor's name"
+                on_press: input.label_id.text = "Doctor's Name"
+
+        Button:
+            text: "Return"

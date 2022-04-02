@@ -1,20 +1,28 @@
 from kivy.uix.label import Label
-from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.actionbar import ActionBar
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
 from src.persistence.models import ViewAppointment
-
-class ScreenLayout(Screen):
-    pass
-
-class LayoutActionBar(ActionBar):
-    pass
 
 class TableScreen(Screen):
     def __init__(self, appointments: list[ViewAppointment], **kw):
         super().__init__(**kw)
         self.add_widget(Table(appointments))
-        self.add_widget(LayoutActionBar())
+        self.add_widget(TableScreenActionBar())
+
+class ProgramScreenManager(ScreenManager):
+    def __init__(self, table_screen: TableScreen) -> None:
+        super().__init__()
+        self.add_widget(table_screen)
+        self.add_widget(SearchScreen(name='search_screen'))
+
+class ScreenLayout(Screen):
+    pass
+
+class TableScreenActionBar(ActionBar):
+    def get_search_screen(self):
+        return SearchScreen()
 
 class Table(GridLayout):
     def __init__(self, appointments: list[ViewAppointment], **kwargs):
@@ -49,3 +57,15 @@ class MoreDataThenRowsException(Exception):
 
 class TableCell(Label):
     pass
+
+class SearchScreen(Screen):
+    pass
+
+class AddScreen(Screen):
+    def __init__(self, form: BoxLayout, return_screen_name: str, **kw):
+        super().__init__(**kw)
+        self.add_widget(form)
+        self.__return_screen_name = return_screen_name
+
+    def return_back(self):
+        pass
