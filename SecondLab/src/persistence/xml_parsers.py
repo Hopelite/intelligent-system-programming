@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from datetime import date, datetime
+from datetime import datetime
 import xml.sax
 from typing import TypeVar, Generic
 from src.persistence.models import ViewAppointment
+from xml.dom.minidom import Document
 
 T = TypeVar('T')
 
@@ -54,3 +55,48 @@ class XMLReader(IXMLReader[ViewAppointment], xml.sax.ContentHandler):
         parser.parse(self._file_path)
 
         return self.__read_data
+
+class IXMLWriter(ABC, Generic[T]):
+    """Contains method for writing to XML files."""
+    def __init__(self, file_path: str) -> None:
+        self._file_path = file_path
+
+    @abstractmethod
+    def write(self, data: list[T]) -> None:
+        """Writes data to specified XML file."""
+        pass
+
+class XMLWriter(IXMLWriter[ViewAppointment]):
+    """Implements method for writing to XML files ViewAppointment models."""
+    def __init__(self, file_path: str) -> None:
+        self.__file_path = file_path
+        self.xml_document = Document()
+
+    def write(self, appointments: list[ViewAppointment]) -> None:
+        xml_document_data = self.xml_document.createElement("appointments")
+
+        for appointment in appointments:
+            xml_document_data.appendChild(self.__parse_appointment(appointment))
+
+        self.xml_document.appendChild(xml_document_data)
+        self.xml_document.writexml(open(self.__file_path, 'w'), indent = "  ", addindent = "  ", newl = '\n')
+        self.xml_document.unlink()
+
+    def __parse_appointment(self, appointment: ViewAppointment):
+        xml_appointment = self.xml_document.createElement("appointment")
+        
+        xml_appointment.appendChild(self.__parse_property("patient_name", appointment.patient_name))
+        xml_appointment.appendChild(self.__parse_property("patient_address", appointment.patient_address))
+        xml_appointment.appendChild(self.__parse_property("patient_date_of_birth", appointment.patient_date_of_birth.strftime('%m-%d-%Y')))
+        xml_appointment.appendChild(self.__parse_property("appointent_date", appointment.appointent_date.strftime('%m-%d-%Y')))
+        xml_appointment.appendChild(self.__parse_property("doctor_name", appointment.doctor_name))
+        xml_appointment.appendChild(self.__parse_property("conclusion", appointment.conclusion))
+
+        return xml_appointment
+
+    def __parse_property(self, attribute_name: str, value: str):
+        temp_child = self.xml_document.createElement(value)
+        node_text = self.xml_document.createTextNode(attribute_name)
+        temp_child.appendChild(node_text)
+        
+        return temp_child

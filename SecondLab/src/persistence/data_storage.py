@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
+from SecondLab.src.persistence.xml_parsers import XMLWriter
 from src.persistence.models import ViewAppointment
 from src.persistence.xml_parsers import XMLReader
 
@@ -37,9 +38,10 @@ class StorageIsEmptyException(Exception):
 class XMLStorage(IStorage[list[ViewAppointment]]):
     def __init__(self, file_path: str) -> None:
         self.__reader = XMLReader(file_path)
+        self.__writer = XMLWriter(file_path)
 
     def save(self, data: list[ViewAppointment]) -> None:
-        pass
+        self.__writer.write(data)
 
     def load(self) -> list[ViewAppointment]:
         return self.__reader.read()
