@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
-from SecondLab.src.persistence.xml_parsers import XMLWriter
 from src.persistence.models import ViewAppointment
-from src.persistence.xml_parsers import XMLReader
+from src.persistence.xml_parsers import XMLReader, XMLWriter
 
 T = TypeVar('T')
 
