@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+  <appointments>
+    <appointment>
+      <patient_name>Marcella Ledezma</patient_name>
+      <patient_address>Minsk</patient_address>
+      <patient_date_of_birth>10-27-2020</patient_date_of_birth>
+      <appointent_date>10-27-2020</appointent_date>
+      <doctor_name>Doctor Who</doctor_name>
+      <conclusion>Healthy</conclusion>
+    </appointment>
+    <appointment>
+      <patient_name>Vadim Kurdesov</patient_name>
+      <patient_address>Minsk</patient_address>
+      <patient_date_of_birth>3-12-2003</patient_date_of_birth>
+      <appointent_date>4-10-2022</appointent_date>
+      <doctor_name>Doctor Who</doctor_name>
+      <conclusion>Dead</conclusion>
+    </appointment>
+  </appointments>
