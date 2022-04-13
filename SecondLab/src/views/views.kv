@@ -38,17 +38,29 @@
         ActionPrevious:
             title: 'Hospital'
             with_previous: False
-
-        ActionGroup:
+            
+        ActionButton:
+            text: '< Previous'
+            on_press: app.previous()
+            
+        ActionButton:
+            text: 'Next >'
+            on_press: app.next()
+            
+        ActionButton:
             text: 'Add'
-            mode: 'spinner'
+            on_press: app.screen_manager.current = 'add_screen'
 
-            ActionButton:
-                text: 'Doctor'
-            ActionButton:
-                text: 'Patient'
-            ActionButton:
-                text: 'Appoinment'
+        # ActionGroup:
+        #     text: 'Add'
+        #     mode: 'spinner'
+
+        #     ActionButton:
+        #         text: 'Doctor'
+        #     ActionButton:
+        #         text: 'Patient'
+        #     ActionButton:
+        #         text: 'Appoinment'
         
         ActionButton:
             text: 'Find'
@@ -56,6 +68,7 @@
             
         ActionButton:
             text: 'Delete'
+            on_press: app.screen_manager.current = 'delete_screen'
 
 <InputRow@BoxLayout>:
     orientation: 'horizontal'
@@ -79,24 +92,71 @@
 
         Button:
             text: 'Search'
+            on_press: app.find_by(input.text_input_id.text)
 
         BoxLayout:
             orientation: 'horizontal'
 
             Button:
                 text: "Find by patient name"
-                on_press: input.label_id.text = "Patient's Name"
+                on_press: 
+                    app.search_method = 'patient_name'
+                    input.label_id.text = "Patient's Name"
                 
             Button:
                 text: "Find by patient's address"
-                on_press: input.label_id.text = "Patient's Address"
+                on_press: 
+                    app.search_method = 'patient_address'
+                    input.label_id.text = "Patient's Address"
         
         BoxLayout:
             orientation: 'horizontal'
                 
             Button:
                 text: "Find by doctor's name"
+                on_press:
+                    app.search_method = 'doctor_name'
+                    input.label_id.text = "Doctor's Name"
+            
+            Button:
+                text: "Find by appointment date"
+                on_press:
+                    app.search_method = 'appointment_date'
+                    input.label_id.text = "Appointment Date"
+
+        Button:
+            text: "Return"
+            on_press: app.screen_manager.current = 'table_screen'
+            
+<DeleteScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        InputRow:
+            id: input
+            label_text: "Patient's Name"
+
+        Button:
+            text: 'Delete'
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: "Delete by patient name"
+                on_press: input.label_id.text = "Patient's Name"
+                
+            Button:
+                text: "Delete by patient's address"
+                on_press: input.label_id.text = "Patient's Address"
+        
+        BoxLayout:
+            orientation: 'horizontal'
+                
+            Button:
+                text: "Delete by doctor's name"
                 on_press: input.label_id.text = "Doctor's Name"
 
         Button:
             text: "Return"
+            on_press: app.screen_manager.current = 'table_screen'

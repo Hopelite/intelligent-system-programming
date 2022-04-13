@@ -48,7 +48,8 @@ class XMLReader(IXMLReader[ViewAppointment], xml.sax.ContentHandler):
     def endElement(self, tag):
         self.current = ""
 
-    def read(self) -> list[T]:
+    def read(self) -> list[ViewAppointment]:
+        self.__read_data = []
         parser = xml.sax.make_parser()
         parser.setFeature(xml.sax.handler.feature_namespaces, 0)
         parser.setContentHandler(self)

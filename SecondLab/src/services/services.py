@@ -15,7 +15,7 @@ class AppointmentsService:
     def get_by_patient_date_of_birth(self, date: date) -> list[ViewAppointment]:
         return self.__get_by(lambda appointment: date.__eq__(appointment.patient_date_of_birth))
                 
-    def get_by_appointent_date(self, date: date) -> list[ViewAppointment]:
+    def get_by_appointment_date(self, date: date) -> list[ViewAppointment]:
         return self.__get_by(lambda appointment: date.__eq__(appointment.appointent_date))
         
     def get_by_doctor_name(self, name: str) -> list[ViewAppointment]:

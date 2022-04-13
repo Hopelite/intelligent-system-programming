@@ -16,6 +16,7 @@ class ProgramScreenManager(ScreenManager):
         super().__init__()
         self.add_widget(table_screen)
         self.add_widget(SearchScreen(name='search_screen'))
+        self.add_widget(DeleteScreen(name='delete_screen'))
 
 class ScreenLayout(Screen):
     pass
@@ -43,8 +44,8 @@ class Table(GridLayout):
     def __build_table_row(self, appointment: ViewAppointment) -> None:
         self.add_widget(TableCell(text=appointment.patient_name))
         self.add_widget(TableCell(text=appointment.patient_address))
-        self.add_widget(TableCell(text=appointment.patient_date_of_birth.__str__()))
-        self.add_widget(TableCell(text=appointment.appointent_date.__str__()))
+        self.add_widget(TableCell(text=appointment.patient_date_of_birth.strftime('%m-%d-%Y')))
+        self.add_widget(TableCell(text=appointment.appointent_date.strftime('%m-%d-%Y')))
         self.add_widget(TableCell(text=appointment.doctor_name))
         self.add_widget(TableCell(text=appointment.conclusion))
 
@@ -62,10 +63,7 @@ class SearchScreen(Screen):
     pass
 
 class AddScreen(Screen):
-    def __init__(self, form: BoxLayout, return_screen_name: str, **kw):
-        super().__init__(**kw)
-        self.add_widget(form)
-        self.__return_screen_name = return_screen_name
-
-    def return_back(self):
-        pass
+    pass
+    
+class DeleteScreen(Screen):
+    pass
