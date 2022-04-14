@@ -96,8 +96,8 @@ class XMLWriter(IXMLWriter[ViewAppointment]):
         return xml_appointment
 
     def __parse_property(self, attribute_name: str, value: str):
-        temp_child = self.xml_document.createElement(value)
-        node_text = self.xml_document.createTextNode(attribute_name)
+        temp_child = self.xml_document.createElement(attribute_name)
+        node_text = self.xml_document.createTextNode(value)
         temp_child.appendChild(node_text)
         
         return temp_child

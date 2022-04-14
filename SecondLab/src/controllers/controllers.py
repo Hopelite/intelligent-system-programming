@@ -40,6 +40,10 @@ class ViewAppointmentsController:
         appointments = self.__paginate(self.__service.get_by_appointment_date(appointment_date), page, size)
         return TableScreen(appointments, name="table_screen")
 
+    def delete_by_patient_name(self, name: str) -> TableScreen:
+        self.__service.delete_by_patient_name(name)
+        return self.get_table()
+
     def __paginate(self, appointments: list[ViewAppointment], page: int, size: int) -> list[ViewAppointment]:
         start_index = (page - 1) * size
         end_index = start_index + size

@@ -38,6 +38,10 @@
         ActionPrevious:
             title: 'Hospital'
             with_previous: False
+
+        ActionButton:
+            text: 'Clear Filters'
+            on_press: app.clear()
             
         ActionButton:
             text: '< Previous'
@@ -50,17 +54,6 @@
         ActionButton:
             text: 'Add'
             on_press: app.screen_manager.current = 'add_screen'
-
-        # ActionGroup:
-        #     text: 'Add'
-        #     mode: 'spinner'
-
-        #     ActionButton:
-        #         text: 'Doctor'
-        #     ActionButton:
-        #         text: 'Patient'
-        #     ActionButton:
-        #         text: 'Appoinment'
         
         ActionButton:
             text: 'Find'
@@ -83,6 +76,7 @@
         id: text_input
 
 <SearchScreen>:
+    on_enter: app.search_method = 'patient_name'
     BoxLayout:
         orientation: 'vertical'
 
@@ -126,9 +120,12 @@
 
         Button:
             text: "Return"
-            on_press: app.screen_manager.current = 'table_screen'
+            on_press: 
+                app.search_method = None
+                app.screen_manager.current = 'table_screen'
             
 <DeleteScreen>:
+    on_enter: app.delete_method = 'patient_name'
     BoxLayout:
         orientation: 'vertical'
 
@@ -138,13 +135,16 @@
 
         Button:
             text: 'Delete'
+            on_press: app.delete_by(input.text_input_id.text)
 
         BoxLayout:
             orientation: 'horizontal'
 
             Button:
                 text: "Delete by patient name"
-                on_press: input.label_id.text = "Patient's Name"
+                on_press: 
+                    app.delete_method = 'patient_name'
+                    input.label_id.text = "Patient's Name"
                 
             Button:
                 text: "Delete by patient's address"

@@ -10,27 +10,34 @@ class Program(App):
         super().__init__(**kwargs)
         self.controller = ViewAppointmentsController()
         self.screen_manager = self.controller.start_program()
-        self.search_method = 'patient_name'
+        self.search_method = None
+        self.current_search_data = None
         self.current_page = 1
+        self.delete_method = None
 
     def build(self):
         return self.screen_manager
+
+    def clear(self):
+        self.search_method = None
+        return self.find_by(None)
 
     def previous(self):
         if self.current_page > 1:
             self.current_page -= 1
 
-        return self.find_by(page=self.current_page)        
+        return self.find_by(self.current_search_data, page=self.current_page)        
 
     def next(self):
         if self.current_page < self.controller.get_number_of_pages():
             self.current_page += 1
 
-        return self.find_by(page=self.current_page)
+        return self.find_by(self.current_search_data, page=self.current_page)
 
-    def find_by(self, input_data: str = None, page: int = 1):
+    def find_by(self, input_data: str, page: int = 1):
+        self.current_search_data = input_data
         self.screen_manager.clear_widgets()
-        if input_data == None:
+        if self.search_method == None:
             self.screen_manager.add_widget(self.controller.get_table(page))
         elif self.search_method == 'patient_name':
             self.screen_manager.add_widget(self.controller.find_by_patient_name(input_data, page))
@@ -43,6 +50,15 @@ class Program(App):
 
         self.screen_manager.add_widget(SearchScreen(name='search_screen'))
         self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
+
+    def delete_by(self, input_data: str):
+        self.screen_manager.clear_widgets()
+        if self.delete_method == 'patient_name':
+            self.screen_manager.add_widget(self.controller.delete_by_patient_name(input_data))
+
+        self.screen_manager.add_widget(SearchScreen(name='search_screen'))
+        self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
+        self.delete_method = None
         
 if __name__ == '__main__':
     Program().run()
