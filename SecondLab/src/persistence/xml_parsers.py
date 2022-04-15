@@ -37,9 +37,9 @@ class XMLReader(IXMLReader[ViewAppointment], xml.sax.ContentHandler):
         elif self.current == "patient_address":
             self.__current_model.patient_address = content
         elif self.current == "patient_date_of_birth":
-            self.__current_model.patient_date_of_birth = datetime.strptime(content, '%m-%d-%Y').date()
+            self.__current_model.patient_date_of_birth = datetime.strptime(content, '%d-%m-%Y').date()
         elif self.current == "appointent_date":
-            self.__current_model.appointent_date = datetime.strptime(content, '%m-%d-%Y').date()
+            self.__current_model.appointent_date = datetime.strptime(content, '%d-%m-%Y').date()
         elif self.current == "doctor_name":
             self.__current_model.doctor_name = content
         elif self.current == "conclusion":
@@ -48,7 +48,8 @@ class XMLReader(IXMLReader[ViewAppointment], xml.sax.ContentHandler):
     def endElement(self, tag):
         self.current = ""
 
-    def read(self) -> list[T]:
+    def read(self) -> list[ViewAppointment]:
+        self.__read_data = []
         parser = xml.sax.make_parser()
         parser.setFeature(xml.sax.handler.feature_namespaces, 0)
         parser.setContentHandler(self)
@@ -87,16 +88,16 @@ class XMLWriter(IXMLWriter[ViewAppointment]):
         
         xml_appointment.appendChild(self.__parse_property("patient_name", appointment.patient_name))
         xml_appointment.appendChild(self.__parse_property("patient_address", appointment.patient_address))
-        xml_appointment.appendChild(self.__parse_property("patient_date_of_birth", appointment.patient_date_of_birth.strftime('%m-%d-%Y')))
-        xml_appointment.appendChild(self.__parse_property("appointent_date", appointment.appointent_date.strftime('%m-%d-%Y')))
+        xml_appointment.appendChild(self.__parse_property("patient_date_of_birth", appointment.patient_date_of_birth.strftime('%d-%m-%Y')))
+        xml_appointment.appendChild(self.__parse_property("appointent_date", appointment.appointent_date.strftime('%d-%m-%Y')))
         xml_appointment.appendChild(self.__parse_property("doctor_name", appointment.doctor_name))
         xml_appointment.appendChild(self.__parse_property("conclusion", appointment.conclusion))
 
         return xml_appointment
 
     def __parse_property(self, attribute_name: str, value: str):
-        temp_child = self.xml_document.createElement(value)
-        node_text = self.xml_document.createTextNode(attribute_name)
+        temp_child = self.xml_document.createElement(attribute_name)
+        node_text = self.xml_document.createTextNode(value)
         temp_child.appendChild(node_text)
         
         return temp_child
