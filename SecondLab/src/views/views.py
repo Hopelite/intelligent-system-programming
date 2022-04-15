@@ -63,6 +63,8 @@ class SearchScreen(Screen):
     pass
 
 class AddScreen(Screen):
+    model = ViewAppointment()
+
     def __init__(self, model: ViewAppointment = ViewAppointment(), success = None, **kw) -> None:
         super().__init__(**kw)
         self.model = model

@@ -1,9 +1,7 @@
 from kivy.app import App
 from src.controllers.controllers import ViewAppointmentsController
-from src.persistence.models import ViewAppointment
 from src.views.views import AddScreen, SearchScreen, DeleteScreen
 from kivy.lang import Builder
-from datetime import datetime
 
 Builder.load_file("src/views/views.kv")
 

@@ -68,12 +68,14 @@
     label_text: 'Enter Label Text'
     label_id: label
     text_input_id: text_input
+    text_input_text: ''
 
     Label:
         id: label
         text: root.label_text
     TextInput:
         id: text_input
+        text: root.text_input_text
 
 <SearchScreen>:
     on_enter: app.search_method = 'patient_name'
@@ -176,6 +178,7 @@
         InputRow:
             id: input_name
             label_text: "ФИО пациента"
+            text_input_text: self.parent.parent.model.patient_name
         
         InputRow:
             id: input_address

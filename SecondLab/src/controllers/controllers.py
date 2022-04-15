@@ -63,10 +63,18 @@ class ViewAppointmentsController:
     patient_name: str, patient_address: str, 
     patient_date_of_birth: str, appointment_date: str,
     doctor_name: str, conclusion: str) -> ViewAppointment:
+    
+        parsed_birth_date = None
+        if appointment_date != '':
+            parsed_birth_date = datetime.strptime(patient_date_of_birth, '%d-%m-%Y').date()
+        parsed_appointment_date = None
+        if appointment_date != '':
+            parsed_appointment_date = datetime.strptime(appointment_date, '%d-%m-%Y').date()
+
         return ViewAppointment(
             patient_name=patient_name, patient_address = patient_address,
-            patient_date_of_birth=datetime.strptime(patient_date_of_birth, '%m-%d-%Y').date(),
-            appointent_date=datetime.strptime(appointment_date, '%m-%d-%Y').date(),
+            patient_date_of_birth=parsed_birth_date,
+            appointent_date=parsed_appointment_date,
             doctor_name=doctor_name, conclusion=conclusion)
 
     def __is_appointment_not_filled(self, appointment: ViewAppointment):
