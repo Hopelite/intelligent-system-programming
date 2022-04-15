@@ -140,7 +140,6 @@ class Appointment(IIdentifiable):
 class ViewAppointment:
     """Represents appointment model for view."""
     def __init__(self,
-        id: int = 0,
         patient_name: str = "",
         patient_address: str = "",
         patient_date_of_birth: date = None,
@@ -153,14 +152,6 @@ class ViewAppointment:
         self.appointent_date = appointent_date
         self.doctor_name = doctor_name
         self.conclusion = conclusion
-
-    @property
-    def id(self) -> int:
-        return self.__patient_id
-
-    @id.setter
-    def id(self, value: int):
-        self.__patient_id = value
         
     @property
     def patient_name(self) -> str:

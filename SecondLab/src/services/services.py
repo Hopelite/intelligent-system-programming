@@ -23,6 +23,15 @@ class AppointmentsService:
     
     def delete_by_patient_name(self, name: str) -> None:
         return self.__delete_by(lambda appointment: name.casefold() == appointment.patient_name.casefold())
+        
+    def delete_by_patient_address(self, address: str) -> None:
+        return self.__delete_by(lambda appointment: address.casefold() == appointment.patient_address.casefold())
+        
+    def delete_by_patient_date_of_birth(self, date: date) -> None:
+        return self.__delete_by(lambda appointment: date.__eq__(appointment.patient_date_of_birth))
+                
+    def delete_by_appointment_date(self, date: date) -> None:
+        return self.__delete_by(lambda appointment: date.__eq__(appointment.appointent_date))
     
     def __get_by(self, func) -> list[ViewAppointment]:
         result = []

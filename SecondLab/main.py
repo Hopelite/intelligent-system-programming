@@ -1,7 +1,9 @@
 from kivy.app import App
 from src.controllers.controllers import ViewAppointmentsController
-from src.views.views import SearchScreen, DeleteScreen
+from src.persistence.models import ViewAppointment
+from src.views.views import AddScreen, SearchScreen, DeleteScreen
 from kivy.lang import Builder
+from datetime import datetime
 
 Builder.load_file("src/views/views.kv")
 
@@ -49,16 +51,31 @@ class Program(App):
             self.screen_manager.add_widget(self.controller.find_by_appointment_date(input_data, page))
 
         self.screen_manager.add_widget(SearchScreen(name='search_screen'))
+        self.screen_manager.add_widget(AddScreen(name='add_screen'))
         self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
 
     def delete_by(self, input_data: str):
         self.screen_manager.clear_widgets()
         if self.delete_method == 'patient_name':
             self.screen_manager.add_widget(self.controller.delete_by_patient_name(input_data))
+        if self.delete_method == 'patient_address':
+            self.screen_manager.add_widget(self.controller.delete_by_patient_address(input_data))
+        if self.delete_method == 'patient_name':
+            self.screen_manager.add_widget(self.controller.delete_by_patient_name(input_data))
+        if self.delete_method == 'patient_address':
+            self.screen_manager.add_widget(self.controller.delete_by_patient_address(input_data))
 
         self.screen_manager.add_widget(SearchScreen(name='search_screen'))
+        self.screen_manager.add_widget(AddScreen(name='add_screen'))
         self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
         self.delete_method = None
+
+    def add(self, name, address, birth, appointment_date, doctor, conclusion):
+        self.screen_manager.clear_widgets()
+        self.screen_manager.add_widget(self.controller.add_appointment(name, address, birth, appointment_date, doctor, conclusion))
+        self.screen_manager.add_widget(SearchScreen(name='search_screen'))
+        self.screen_manager.add_widget(self.controller.get_table())
+        self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
         
 if __name__ == '__main__':
     Program().run()

@@ -2,7 +2,6 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.actionbar import ActionBar
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.boxlayout import BoxLayout
 from src.persistence.models import ViewAppointment
 
 class TableScreen(Screen):
@@ -16,6 +15,7 @@ class ProgramScreenManager(ScreenManager):
         super().__init__()
         self.add_widget(table_screen)
         self.add_widget(SearchScreen(name='search_screen'))
+        self.add_widget(AddScreen(name='add_screen'))
         self.add_widget(DeleteScreen(name='delete_screen'))
 
 class ScreenLayout(Screen):
@@ -63,7 +63,10 @@ class SearchScreen(Screen):
     pass
 
 class AddScreen(Screen):
-    pass
+    def __init__(self, model: ViewAppointment = ViewAppointment(), success = None, **kw) -> None:
+        super().__init__(**kw)
+        self.model = model
+        self.success = success
     
 class DeleteScreen(Screen):
     pass

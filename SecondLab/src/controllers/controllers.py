@@ -4,7 +4,7 @@ from src.persistence.data_storage import XMLStorage
 from src.persistence.models import ViewAppointment
 from src.persistence.repository import Repository
 from src.services.services import AppointmentsService
-from src.views.views import ProgramScreenManager, TableScreen
+from src.views.views import ProgramScreenManager, TableScreen, AddScreen
 
 class ViewAppointmentsController:
     def __init__(self) -> None:
@@ -43,6 +43,36 @@ class ViewAppointmentsController:
     def delete_by_patient_name(self, name: str) -> TableScreen:
         self.__service.delete_by_patient_name(name)
         return self.get_table()
+
+    def delete_by_patient_address(self, address: str) -> TableScreen:
+        self.__service.delete_by_patient_address(address)
+        return self.get_table()
+
+    def add_appointment(self, name, address, birth, appointment_date, doctor, conclusion) -> AddScreen:
+        try:
+            appointment = self.__parse_to_appointment(name, address, birth, appointment_date, doctor, conclusion)
+            if self.__is_appointment_not_filled(appointment):
+                return AddScreen(appointment, False, name='add_screen')
+            else:
+                self.__repository.add(appointment)
+                return AddScreen(success=True, name='add_screen')
+        except:
+            return AddScreen(success=False, name='add_screen')
+            
+    def __parse_to_appointment(self, 
+    patient_name: str, patient_address: str, 
+    patient_date_of_birth: str, appointment_date: str,
+    doctor_name: str, conclusion: str) -> ViewAppointment:
+        return ViewAppointment(
+            patient_name=patient_name, patient_address = patient_address,
+            patient_date_of_birth=datetime.strptime(patient_date_of_birth, '%m-%d-%Y').date(),
+            appointent_date=datetime.strptime(appointment_date, '%m-%d-%Y').date(),
+            doctor_name=doctor_name, conclusion=conclusion)
+
+    def __is_appointment_not_filled(self, appointment: ViewAppointment):
+        return appointment.patient_name == "" or appointment.patient_address == "" \
+            or appointment.patient_date_of_birth == None or appointment.appointent_date == None \
+                or appointment.doctor_name == ""
 
     def __paginate(self, appointments: list[ViewAppointment], page: int, size: int) -> list[ViewAppointment]:
         start_index = (page - 1) * size

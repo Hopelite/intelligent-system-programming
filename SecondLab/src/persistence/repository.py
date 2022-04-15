@@ -55,8 +55,8 @@ class Repository(IRepository[T]):
         self.__storage.save(entities)
 
     def add(self, entity: T) -> None:
-        if self.__contains(entity.id):
-            raise EntityIsAlreadyInRepositoryException("Unable to add entity: an entity with the same ID already exists in this repository.")
+        # if self.__contains(entity.id):
+        #     raise EntityIsAlreadyInRepositoryException("Unable to add entity: an entity with the same ID already exists in this repository.")
 
         entities = self.get_all()
         entities.append(entity)

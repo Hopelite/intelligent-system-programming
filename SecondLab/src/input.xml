@@ -96,4 +96,12 @@
       <doctor_name>Doctor Who</doctor_name>
       <conclusion>Dead</conclusion>
     </appointment>
+    <appointment>
+      <patient_name>Vad</patient_name>
+      <patient_address>Min</patient_address>
+      <patient_date_of_birth>12-12-2003</patient_date_of_birth>
+      <appointent_date>12-12-2022</appointent_date>
+      <doctor_name>Who</doctor_name>
+      <conclusion></conclusion>
+    </appointment>
   </appointments>
