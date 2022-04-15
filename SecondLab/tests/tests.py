@@ -219,7 +219,7 @@ class AppointmentsServiceTests(unittest.TestCase):
         # Assert
         self.assertEqual(appointments[1], actual[0])
         
-    def test_AppointmentsServiceTest_get_by_appointent_date_returns_patients_with_the_same_appointent_date(self):
+    def test_AppointmentsServiceTest_get_by_appointment_date_returns_patients_with_the_same_appointent_date(self):
         # Arrange
         expected_date = date(1994, 4, 2)
         expected = ViewAppointment('Denis', 'Tokyo', date(2020, 2, 12), expected_date, 'Dr. Who', 'Healthy')
@@ -229,7 +229,7 @@ class AppointmentsServiceTests(unittest.TestCase):
         service = AppointmentsService(repository)
 
         # Act
-        actual = service.get_by_appointent_date(expected_date)
+        actual = service.get_by_appointment_date(expected_date)
 
         # Assert
         self.assertEqual(appointments[1], actual[0])

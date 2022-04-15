@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
+from src.persistence.models import ViewAppointment
+from src.persistence.xml_parsers import XMLReader, XMLWriter
 
 T = TypeVar('T')
 
@@ -31,3 +33,14 @@ class InMemoryStorage(IStorage[T]):
 
 class StorageIsEmptyException(Exception):
     pass
+
+class XMLStorage(IStorage[list[ViewAppointment]]):
+    def __init__(self, file_path: str) -> None:
+        self.__reader = XMLReader(file_path)
+        self.__writer = XMLWriter(file_path)
+
+    def save(self, data: list[ViewAppointment]) -> None:
+        self.__writer.write(data)
+
+    def load(self) -> list[ViewAppointment]:
+        return self.__reader.read()

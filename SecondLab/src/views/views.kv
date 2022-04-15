@@ -31,13 +31,7 @@
 <TableCell>:
     color: 0, 0, 0, 1
 
-<ScreenLayout>:
-    BoxLayout:
-        orientation: 'vertical'
-
-        LayoutActionBar:
-
-<LayoutActionBar>:
+<TableScreenActionBar>:
     pos: 0, 0
 
     ActionView:        
@@ -45,19 +39,174 @@
             title: 'Hospital'
             with_previous: False
 
-        ActionGroup:
-            text: 'Add'
-            mode: 'spinner'
-
-            ActionButton:
-                text: 'Doctor'
-            ActionButton:
-                text: 'Patient'
-            ActionButton:
-                text: 'Appoinment'
-        
         ActionButton:
-            text: 'Find'
+            text: 'Clear Filters'
+            on_press: app.clear()
             
         ActionButton:
-            text: 'Delete'
+            text: '< Previous'
+            on_press: app.previous()
+            
+        ActionButton:
+            text: 'Next >'
+            on_press: app.next()
+            
+        ActionButton:
+            text: 'Добавить'
+            on_press: app.screen_manager.current = 'add_screen'
+        
+        ActionButton:
+            text: 'Найти'
+            on_press: app.screen_manager.current = 'search_screen'
+            
+        ActionButton:
+            text: 'Удалить'
+            on_press: app.screen_manager.current = 'delete_screen'
+
+<InputRow@BoxLayout>:
+    orientation: 'horizontal'
+    label_text: 'Enter Label Text'
+    label_id: label
+    text_input_id: text_input
+    text_input_text: ''
+
+    Label:
+        id: label
+        text: root.label_text
+    TextInput:
+        id: text_input
+        text: root.text_input_text
+
+<SearchScreen>:
+    on_enter: app.search_method = 'patient_name'
+    BoxLayout:
+        orientation: 'vertical'
+
+        InputRow:
+            id: input
+            label_text: "ФИО пациента"
+
+        Button:
+            text: 'Найти'
+            on_press: app.find_by(input.text_input_id.text)
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: "Найти по ФИО пациента"
+                on_press: 
+                    app.search_method = 'patient_name'
+                    input.label_id.text = "ФИО пациента"
+                
+            Button:
+                text: "Найти по адресу прописки"
+                on_press: 
+                    app.search_method = 'patient_address'
+                    input.label_id.text = "Адрес прописки"
+        
+        BoxLayout:
+            orientation: 'horizontal'
+                
+            Button:
+                text: "Найти по ФИО врача"
+                on_press:
+                    app.search_method = 'doctor_name'
+                    input.label_id.text = "ФИО врача"
+            
+            Button:
+                text: "Найти по дате приема"
+                on_press:
+                    app.search_method = 'appointment_date'
+                    input.label_id.text = "Дата приема"
+
+        Button:
+            text: "Вернуться"
+            on_press: 
+                app.search_method = None
+                app.screen_manager.current = 'table_screen'
+            
+<DeleteScreen>:
+    on_enter: app.delete_method = 'patient_name'
+    BoxLayout:
+        orientation: 'vertical'
+
+        InputRow:
+            id: input
+            label_text: "ФИО пациента"
+
+        Button:
+            text: 'Удалить'
+            on_press: app.delete_by(input.text_input_id.text)
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: "Удалить по ФИО пациента"
+                on_press: 
+                    app.delete_method = 'patient_name'
+                    input.label_id.text = "ФИО пациента"
+                
+            Button:
+                text: "Удалить по адресу прописки"
+                on_press: 
+                    app.delete_method = 'patient_address'
+                    input.label_id.text = "Адрес прописки"
+        
+        BoxLayout:
+            orientation: 'horizontal'
+                
+            Button:
+                text: "Удалить по ФИО врача"
+                on_press: input.label_id.text = "ФИО Врача"
+
+            Button:
+                text: "Удалить по дате приема"
+                on_press:
+                    app.delete_method = 'appointment_date'
+                    input.label_id.text = "Дата приема"
+
+        Button:
+            text: "Вернуться"
+            on_press: app.screen_manager.current = 'table_screen'
+
+<AddScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        
+        InputRow:
+            id: input_name
+            label_text: "ФИО пациента"
+            text_input_text: self.parent.parent.model.patient_name
+        
+        InputRow:
+            id: input_address
+            label_text: "Адрес прописки"
+            
+        InputRow:
+            id: input_birth
+            label_text: "Дата рождения"
+
+        InputRow:
+            id: input_date
+            label_text: "Дата приема"
+
+        InputRow:
+            id: input_doctor
+            label_text: "ФИО врача"
+            
+        InputRow:
+            id: input_conclusion
+            label_text: "Заключение"
+
+        Button:
+            text: "Добавить"
+            on_press: 
+                app.add(input_name.text_input_id.text, input_address.text_input_id.text,
+                input_birth.text_input_id.text, input_date.text_input_id.text,
+                input_doctor.text_input_id.text, input_conclusion.text_input_id.text)
+        
+        Button:
+            text: "Вернуться"
+            on_press: app.screen_manager.current = 'table_screen'

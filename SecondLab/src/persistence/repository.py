@@ -31,6 +31,10 @@ class IRepository(ABC, Generic[T]):
     def update(self, entity: T) -> None:
         """Updates entity in repository."""
         pass
+    
+    @abstractmethod
+    def replace_all(self, entities: list[T]) -> None:
+        pass
 
 class Repository(IRepository[T]):
     def __init__(self, storage: IStorage[list[T]]) -> None:
@@ -47,9 +51,12 @@ class Repository(IRepository[T]):
     def get_all(self) -> list[T]:
         return self.__storage.load()
 
+    def replace_all(self, entities: list[T]) -> None:
+        self.__storage.save(entities)
+
     def add(self, entity: T) -> None:
-        if self.__contains(entity.id):
-            raise EntityIsAlreadyInRepositoryException("Unable to add entity: an entity with the same ID already exists in this repository.")
+        # if self.__contains(entity.id):
+        #     raise EntityIsAlreadyInRepositoryException("Unable to add entity: an entity with the same ID already exists in this repository.")
 
         entities = self.get_all()
         entities.append(entity)
