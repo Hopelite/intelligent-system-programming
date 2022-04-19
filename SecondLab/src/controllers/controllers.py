@@ -1,6 +1,6 @@
 import math
 from datetime import datetime
-from src.persistence.data_storage import XMLStorage
+from src.persistence.data_storage import InMemoryStorage, XMLStorage
 from src.persistence.models import ViewAppointment
 from src.persistence.repository import Repository
 from src.services.services import AppointmentsService
@@ -8,13 +8,17 @@ from src.views.views import ProgramScreenManager, TableScreen, AddScreen
 
 class ViewAppointmentsController:
     def __init__(self) -> None:
-        storage = XMLStorage("C:\\Users\\Vadzim_Kurdzesau\\source\\repos\\BSUIR\\intelligent-system-programming\\SecondLab\\src\\input.xml")
-        self.__repository = Repository[ViewAppointment](storage)
+        self.__storage = InMemoryStorage(list[ViewAppointment]())
+        self.__repository = Repository[ViewAppointment](self.__storage)
         self.__service = AppointmentsService(self.__repository)
+        self.__current_file_path = None
 
     def start_program(self) -> ProgramScreenManager:
         table_screen = self.get_table()
         return ProgramScreenManager(table_screen) 
+
+    def get_number_of_records(self) -> int:
+        return len(self.__storage.load())
 
     def get_number_of_pages(self) -> int:
         return math.ceil(len(self.__repository.get_all()) / 10)
@@ -39,6 +43,11 @@ class ViewAppointmentsController:
         appointment_date = datetime.strptime(appointment_date_str, '%m-%d-%Y').date()
         appointments = self.__paginate(self.__service.get_by_appointment_date(appointment_date), page, size)
         return TableScreen(appointments, name="table_screen")
+        
+    def find_by_birth_date(self, birth_date_str: str, page: int = 1, size: int = 10) -> TableScreen:
+        birth_date = datetime.strptime(birth_date_str, '%m-%d-%Y').date()
+        appointments = self.__paginate(self.__service.get_by_birth_date(birth_date), page, size)
+        return TableScreen(appointments, name="table_screen")
 
     def delete_by_patient_name(self, name: str) -> TableScreen:
         self.__service.delete_by_patient_name(name)
@@ -46,6 +55,15 @@ class ViewAppointmentsController:
 
     def delete_by_patient_address(self, address: str) -> TableScreen:
         self.__service.delete_by_patient_address(address)
+        return self.get_table()
+        
+    def delete_by_patient_date_of_birth(self, address: str) -> TableScreen:
+        self.__service.delete_by_patient_date_of_birth(address)
+        return self.get_table()
+        
+    def delete_by_patient_date_of_birth(self, birth_date_str: str) -> TableScreen:
+        birth_date = datetime.strptime(birth_date_str, '%m-%d-%Y').date()
+        self.__service.delete_by_patient_date_of_birth(birth_date)
         return self.get_table()
 
     def add_appointment(self, name, address, birth, appointment_date, doctor, conclusion) -> AddScreen:
@@ -58,6 +76,23 @@ class ViewAppointmentsController:
                 return AddScreen(success=True, name='add_screen')
         except:
             return AddScreen(success=False, name='add_screen')
+
+    def load_from_file(self, path_to_file: str) -> bool:
+        try:
+            xml_storage = XMLStorage(path_to_file)
+            data = xml_storage.load()
+            self.__current_file_path = path_to_file
+            self.__storage.save(data)
+            return True
+        except:
+            return False
+
+    def save_to_file(self) -> bool:
+        if self.__current_file_path == None:
+            return False
+
+        xml_storage = XMLStorage(self.__current_file_path)
+        xml_storage.save(self.__storage.load())
             
     def __parse_to_appointment(self, 
     patient_name: str, patient_address: str, 

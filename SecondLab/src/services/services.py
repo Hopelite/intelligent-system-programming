@@ -18,11 +18,17 @@ class AppointmentsService:
     def get_by_appointment_date(self, date: date) -> list[ViewAppointment]:
         return self.__get_by(lambda appointment: date.__eq__(appointment.appointent_date))
         
+    def get_by_birth_date(self, date: date) -> list[ViewAppointment]:
+        return self.__get_by(lambda appointment: date.__eq__(appointment.patient_date_of_birth))
+        
     def get_by_doctor_name(self, name: str) -> list[ViewAppointment]:
         return self.__get_by(lambda appointment: name.casefold() == appointment.doctor_name.casefold())
     
     def delete_by_patient_name(self, name: str) -> None:
         return self.__delete_by(lambda appointment: name.casefold() == appointment.patient_name.casefold())
+        
+    def delete_by_doctor_name(self, name: str) -> None:
+        return self.__delete_by(lambda appointment: name.casefold() == appointment.doctor_name.casefold())
         
     def delete_by_patient_address(self, address: str) -> None:
         return self.__delete_by(lambda appointment: address.casefold() == appointment.patient_address.casefold())

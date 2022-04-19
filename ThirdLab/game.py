@@ -92,17 +92,17 @@ class MenuState(IState):
             if event.type == pygame.QUIT:
                 self.__state_machine.is_running = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
-                if self.__row_highlighted == 3:
+                if self.__row_highlighted == 2:
                     self.__row_highlighted = 0
                 else:
                     self.__row_highlighted += 1
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_Up:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                 if self.__row_highlighted == 0:
-                    self.__row_highlighted = 3
+                    self.__row_highlighted = 2
                 else:
                     self.__row_highlighted -= 1
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_KP_ENTER:
-                self.__state_machine.state_name = START
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                self.__state_machine.state_name = self.__menu_options[self.__row_highlighted].state_name
 
     def update(self) -> None:
         pass
@@ -110,7 +110,7 @@ class MenuState(IState):
     def draw(self) -> None:
         self.__screen.fill(BLACK)
         font_size = 46
-        recordPosition = HEIGHT - PADDING - font_size
+        recordPosition = HEIGHT / 2
         text_color = (190, 190, 190)
         for index, option in enumerate(self.__menu_options):
             if index == self.__row_highlighted:
@@ -118,19 +118,44 @@ class MenuState(IState):
             else:
                 text_color = SELECTED_COLOR
             self._draw_text(option.text, self.__screen, [WIDTH//2, recordPosition],  font_size, text_color, "arial", centered=True)
-            recordPosition -= font_size
-        # self._draw_text("HIGHSCORES", self.__screen, [WIDTH//2, recordPosition],  font_size, (190, 190, 190), "arial", centered=True)
-        # recordPosition -= font_size
-        # self._draw_text("INFO", self.__screen, [WIDTH//2, recordPosition],  font_size, (190, 190, 190), "arial", centered=True)
-        # recordPosition -= font_size
-        # self._draw_text("QUIT", self.__screen, [WIDTH//2, recordPosition],  font_size, (190, 190, 190), "arial", centered=True)
-        # recordPosition -= font_size
+            recordPosition += font_size
+
+class HighScoresState(IState):
+    def __init__(self, state_machine: StateMachine, screen: pygame.Surface) -> None:
+        self.__state_machine = state_machine
+        self.__screen = screen
+        self.__table_of_records = TableOfRecords()
+
+    def get_state_name(self) -> str:
+        return RECORDS
+
+    def handle_events(self) -> None:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.__state_machine.is_running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.__state_machine.state_name = MENU
+
+    def update(self) -> None:
+        pass
+
+    def draw(self) -> None:
+        self.__draw_high_scores()
+        self._draw_text('HIGH SCORES', self.__screen, [WIDTH//2, PADDING],
+                       START_TEXT_SIZE, (255, 255, 255), START_FONT, centered=True)
+
+    def __draw_high_scores(self):
+        self.__screen.fill(BLACK)
+        records = self.__table_of_records.get_records()
+        recordPosition = PADDING * 3
+        for record in records:
+            self._draw_text(record.name + ': ' + record.score.__str__(), self.__screen, [WIDTH//2, recordPosition],  36, (190, 190, 190), "arial", centered=True)
+            recordPosition += 46
     
 class StartState(IState):
     def __init__(self, state_machine: StateMachine, screen: pygame.Surface) -> None:
         self.__state_machine = state_machine
         self.__screen = screen
-        self.__table_of_records = TableOfRecords()
 
     def get_state_name(self) -> str:
         return START
@@ -147,19 +172,8 @@ class StartState(IState):
     
     def draw(self) -> None:
         self.__screen.fill(BLACK)
-        self.__draw_high_scores()
         self._draw_text('PRESS SPACE', self.__screen, [
                        WIDTH//2, HEIGHT-50], START_TEXT_SIZE, (170, 132, 58), START_FONT, centered=True)
-        self._draw_text('HIGH SCORES', self.__screen, [WIDTH//2, PADDING],
-                       START_TEXT_SIZE, (255, 255, 255), START_FONT, centered=True)
-
-    def __draw_high_scores(self):
-        self.__screen.fill(BLACK)
-        records = self.__table_of_records.get_records()
-        recordPosition = PADDING * 3
-        for record in records:
-            self._draw_text(record.name + ': ' + record.score.__str__(), self.__screen, [WIDTH//2, recordPosition],  36, (190, 190, 190), "arial", centered=True)
-            recordPosition += 46
 
 class PlayState(IState):
     def __init__(self, state_machine: StateMachine, screen: pygame.Surface) -> None:
@@ -322,6 +336,7 @@ class Application():
         self.__state_machine.add_state(StartState(self.__state_machine, screen))
         self.__state_machine.add_state(play_state)
         self.__state_machine.add_state(EndState(self.__state_machine, screen, play_state))
+        self.__state_machine.add_state(HighScoresState(self.__state_machine, screen))
 
     def run(self):
         self.__state_machine.run()
