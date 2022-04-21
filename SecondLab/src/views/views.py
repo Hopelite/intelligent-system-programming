@@ -17,7 +17,7 @@ class ProgramScreenManager(ScreenManager):
         self.add_widget(SearchScreen(name='search_screen'))
         self.add_widget(AddScreen(name='add_screen'))
         self.add_widget(DeleteScreen(name='delete_screen'))
-
+        self.add_widget(LoadScreen(name='load_screen'))
 class ScreenLayout(Screen):
     pass
 
@@ -71,4 +71,12 @@ class AddScreen(Screen):
         self.success = success
     
 class DeleteScreen(Screen):
-    pass
+    def set_deleted_count(self, count: int) -> None:
+        for child in self.children:
+            child.children[6].text = 'Deleted ' + count.__str__() + ' records'
+
+class LoadScreen(Screen):
+    def set_status(self, status: bool) -> None:
+        if status == False:
+            for child in self.children:
+                child.children[3].text = 'Error occured during file loading'

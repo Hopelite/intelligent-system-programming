@@ -1,6 +1,10 @@
 [
     {
         "name": "Test",
+        "score": 203
+    },
+    {
+        "name": "Test",
         "score": 171
     },
     {
@@ -70,6 +74,10 @@
     {
         "name": "Test",
         "score": 61
+    },
+    {
+        "name": "Test",
+        "score": 51
     },
     {
         "name": "Test",

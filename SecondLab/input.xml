@@ -9,36 +9,12 @@
       <conclusion>Healthy</conclusion>
     </appointment>
     <appointment>
-      <patient_name>Vadim Kurdesov</patient_name>
-      <patient_address>Warsaw</patient_address>
-      <patient_date_of_birth>12-02-2003</patient_date_of_birth>
-      <appointent_date>10-04-2022</appointent_date>
-      <doctor_name>Doctor Who</doctor_name>
-      <conclusion>Healthy</conclusion>
-    </appointment>
-    <appointment>
       <patient_name>Denis Kurdesov</patient_name>
       <patient_address>Tokyo</patient_address>
       <patient_date_of_birth>02-04-1994</patient_date_of_birth>
       <appointent_date>10-04-2021</appointent_date>
       <doctor_name>Doctor Who</doctor_name>
       <conclusion>Healthy</conclusion>
-    </appointment>
-    <appointment>
-      <patient_name>Vadim Kurdesov</patient_name>
-      <patient_address>Minsk</patient_address>
-      <patient_date_of_birth>12-02-2003</patient_date_of_birth>
-      <appointent_date>06-03-2022</appointent_date>
-      <doctor_name>Doctor Who</doctor_name>
-      <conclusion>Dead</conclusion>
-    </appointment>
-    <appointment>
-      <patient_name>Vadim Kurdesov</patient_name>
-      <patient_address>Warsaw</patient_address>
-      <patient_date_of_birth>12-02-2003</patient_date_of_birth>
-      <appointent_date>11-04-2022</appointent_date>
-      <doctor_name>Doctor Who</doctor_name>
-      <conclusion>Dead</conclusion>
     </appointment>
     <appointment>
       <patient_name>Alex Kurdesov</patient_name>
@@ -103,5 +79,45 @@
       <appointent_date>15-06-2022</appointent_date>
       <doctor_name>Doctor Who</doctor_name>
       <conclusion>Empty</conclusion>
+    </appointment>
+    <appointment>
+      <patient_name>Nick Wideway</patient_name>
+      <patient_address>Berlin</patient_address>
+      <patient_date_of_birth>12-02-1994</patient_date_of_birth>
+      <appointent_date>15-06-2023</appointent_date>
+      <doctor_name>Doctor Who</doctor_name>
+      <conclusion></conclusion>
+    </appointment>
+    <appointment>
+      <patient_name>Nick Wideway</patient_name>
+      <patient_address>Berlin</patient_address>
+      <patient_date_of_birth>12-02-1994</patient_date_of_birth>
+      <appointent_date>15-06-2021</appointent_date>
+      <doctor_name>Doctor When</doctor_name>
+      <conclusion>Healthy.</conclusion>
+    </appointment>
+    <appointment>
+      <patient_name>Jake Wideway</patient_name>
+      <patient_address>London</patient_address>
+      <patient_date_of_birth>12-02-1998</patient_date_of_birth>
+      <appointent_date>15-06-2019</appointent_date>
+      <doctor_name>Doctor When</doctor_name>
+      <conclusion>Empty</conclusion>
+    </appointment>
+    <appointment>
+      <patient_name>Marcella Ledezma</patient_name>
+      <patient_address>Minsk</patient_address>
+      <patient_date_of_birth>12-12-1998</patient_date_of_birth>
+      <appointent_date>27-11-2020</appointent_date>
+      <doctor_name>Doctor Who</doctor_name>
+      <conclusion>Healthy</conclusion>
+    </appointment>
+    <appointment>
+      <patient_name>xchjklkjhgf</patient_name>
+      <patient_address>fhgjgjh</patient_address>
+      <patient_date_of_birth>01-01-2222</patient_date_of_birth>
+      <appointent_date>02-01-2022</appointent_date>
+      <doctor_name>xcvbnm,</doctor_name>
+      <conclusion></conclusion>
     </appointment>
   </appointments>

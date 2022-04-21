@@ -40,6 +40,14 @@
             with_previous: False
 
         ActionButton:
+            text: 'Save'
+            on_press: app.save()
+
+        ActionButton:
+            text: 'Load'
+            on_press: app.screen_manager.current = 'load_screen'
+
+        ActionButton:
             text: 'Clear Filters'
             on_press: app.clear()
             
@@ -119,6 +127,12 @@
                 on_press:
                     app.search_method = 'appointment_date'
                     input.label_id.text = "Дата приема"
+                    
+        Button:
+            text: "Найти по дате рождения"
+            on_press: 
+                app.search_method = 'date_of_birth'
+                input.label_id.text = "Дата рождения"
 
         Button:
             text: "Вернуться"
@@ -129,7 +143,11 @@
 <DeleteScreen>:
     on_enter: app.delete_method = 'patient_name'
     BoxLayout:
+        id: layout
         orientation: 'vertical'
+        
+        Label:
+            id: status
 
         InputRow:
             id: input
@@ -168,12 +186,21 @@
                     input.label_id.text = "Дата приема"
 
         Button:
+            text: "Удалить по дате рождения"
+            on_press: 
+                app.delete_method = 'date_of_birth'
+                input.label_id.text = "Дата рождения"
+
+        Button:
             text: "Вернуться"
             on_press: app.screen_manager.current = 'table_screen'
 
 <AddScreen>:
     BoxLayout:
         orientation: 'vertical'
+
+        Label:
+            id: status
         
         InputRow:
             id: input_name
@@ -207,6 +234,26 @@
                 input_birth.text_input_id.text, input_date.text_input_id.text,
                 input_doctor.text_input_id.text, input_conclusion.text_input_id.text)
         
+        Button:
+            text: "Вернуться"
+            on_press: app.screen_manager.current = 'table_screen'
+
+<LoadScreen>:
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
+        
+        Label:
+            id: status
+
+        Button:
+            text: "Load"
+            on_press: app.load(input.text_input_id.text)
+
+        InputRow:
+            id: input
+            label_text: "Path to file"
+            
         Button:
             text: "Вернуться"
             on_press: app.screen_manager.current = 'table_screen'
