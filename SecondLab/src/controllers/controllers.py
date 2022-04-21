@@ -8,7 +8,7 @@ from src.views.views import ProgramScreenManager, TableScreen, AddScreen
 
 class ViewAppointmentsController:
     def __init__(self) -> None:
-        storage = XMLStorage("C:\\Users\\Vadzim_Kurdzesau\\source\\repos\\BSUIR\\intelligent-system-programming\\SecondLab\\src\\input.xml")
+        storage = XMLStorage("C:\\Users\\Admin\\source\\repos\\BSUIR\\intelligent-system-programming\\SecondLab\\src\\input.xml")
         self.__repository = Repository[ViewAppointment](storage)
         self.__service = AppointmentsService(self.__repository)
 
