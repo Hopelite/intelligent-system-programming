@@ -1,6 +1,6 @@
 from datetime import date
 from decimal import Decimal
-from teller_machine import BankCard, Banknote, CardAccount, ITellerMachineUI, TellerMachine, TellerMachineUI
+from src.teller_machine import BankCard, Banknote, CardAccount, ITellerMachineUI, TellerMachine, TellerMachineUI
 
 def main(bank_card: BankCard) -> None:
     print("\nHello! To start work, please, insert your card.")

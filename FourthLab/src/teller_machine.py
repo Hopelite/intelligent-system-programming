@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
-from teller_machine_exceptions import InvalidBanknoteValueException, InvalidCardNumberException, InvalidCvcException, InvalidPasswordException, NegativeMoneyAmountException, NotEnoughMoneyInStorageException, NotEnoughMoneyOnBalanceException
-from data_storage import IStorage, JsonFileStorage
+from src.teller_machine_exceptions import InvalidBanknoteValueException, InvalidCardNumberException, InvalidCvcException, InvalidPasswordException, NegativeMoneyAmountException, NotEnoughMoneyInStorageException, NotEnoughMoneyOnBalanceException
+from src.data_storage import IStorage, JsonFileStorage
 
 class Banknote:
     """Represents the banknote model."""

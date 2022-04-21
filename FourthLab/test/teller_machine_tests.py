@@ -1,9 +1,11 @@
 from datetime import datetime
 from decimal import Decimal
 import unittest
-from teller_machine import BankCard, Banknote, BanknoteStorage, CardAccount
-from teller_machine_exceptions import InvalidBanknoteValueException, InvalidCardNumberException, InvalidCvcException, InvalidPasswordException, NegativeMoneyAmountException, NotEnoughMoneyInStorageException, NotEnoughMoneyOnBalanceException
-from data_storage import InMemoryStorage
+import sys
+sys.path.append("..") # Used to be able to call tests from the tests folder
+from src.teller_machine import BankCard, Banknote, BanknoteStorage, CardAccount
+from src.teller_machine_exceptions import InvalidBanknoteValueException, InvalidCardNumberException, InvalidCvcException, InvalidPasswordException, NegativeMoneyAmountException, NotEnoughMoneyInStorageException, NotEnoughMoneyOnBalanceException
+from src.data_storage import InMemoryStorage
 
 class TellerMachineTests(unittest.TestCase):
     def test_banknote_negative_value_set_raises_an_exception(self):
