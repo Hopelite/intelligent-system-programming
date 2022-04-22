@@ -3,9 +3,11 @@ from decimal import Decimal
 import unittest
 import sys
 sys.path.append("..") # Used to be able to call tests from the tests folder
-from src.teller_machine import BankCard, Banknote, BanknoteStorage, CardAccount
-from src.teller_machine_exceptions import InvalidBanknoteValueException, InvalidCardNumberException, InvalidCvcException, InvalidPasswordException, NegativeMoneyAmountException, NotEnoughMoneyInStorageException, NotEnoughMoneyOnBalanceException
-from src.data_storage import InMemoryStorage
+from src.persistence.banknote import Banknote, InvalidBanknoteValueException
+from src.persistence.bank_card import BankCard, InvalidCvcException, InvalidCardNumberException, InvalidPasswordException
+from src.persistence.banknote_storage import BanknoteStorage, NotEnoughMoneyInStorageException
+from src.persistence.card_account import CardAccount, NotEnoughMoneyOnBalanceException, NegativeMoneyAmountException
+from src.persistence.data_storage import InMemoryStorage
 
 class TellerMachineTests(unittest.TestCase):
     def test_banknote_negative_value_set_raises_an_exception(self):
