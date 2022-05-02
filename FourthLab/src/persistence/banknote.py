@@ -29,6 +29,6 @@ class BanknoteValidator:
             
         return value
         
-# Exception raised when trying to pass invalid banknote value
 class InvalidBanknoteValueException(Exception):
+    """Exception raised when trying to pass invalid banknote value."""
     pass

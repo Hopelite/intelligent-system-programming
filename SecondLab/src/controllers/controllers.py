@@ -93,6 +93,7 @@ class ViewAppointmentsController:
 
         xml_storage = XMLStorage(self.__current_file_path)
         xml_storage.save(self.__storage.load())
+        return True
             
     def __parse_to_appointment(self, 
     patient_name: str, patient_address: str, 

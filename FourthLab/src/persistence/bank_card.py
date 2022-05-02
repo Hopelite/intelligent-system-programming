@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from src.persistence.card_account import ICardAccount, CardAccount
 
 class BankCardValidator:
@@ -75,6 +76,30 @@ class BankCard:
     @property
     def card_account(self) -> CardAccount:
         return self.__card_account
+
+    @staticmethod
+    def from_json(json_dct):
+        account = CardAccount()
+        account.deposit_cash(Decimal(json_dct['balance']))
+        return BankCard(json_dct['card_number'],
+                        datetime.strptime(json_dct['expiration_date'], '%d-%m-%Y').date(),
+                        json_dct['username'],
+                        json_dct['cvc'],
+                        json_dct['password'],
+                        account)
+                        
+    def __iter__(self):
+        yield from {
+            "card_number": self.card_number,
+            "expiration_date": self.expiration_date.strftime('%d-%m-%Y'),
+            "username": self.username,
+            "cvc": self.cvc,
+            "password": self.password,
+            "balance": self.card_account.balance.__str__()
+        }.items()
+
+    def to_json(self):
+        return dict(self)
 
     def __str__(self) -> str:
         return "Card number: " + self.card_number + \
