@@ -1,6 +1,6 @@
 from kivy.app import App
 from src.controllers.controllers import ViewAppointmentsController
-from src.views.views import AddScreen, LoadScreen, SearchScreen, DeleteScreen
+from src.views.views import AddScreen, LoadScreen, SearchScreen, DeleteScreen, SaveScreen
 from kivy.lang import Builder
 import os
 
@@ -15,7 +15,6 @@ class Program(App):
         self.current_search_data = None
         self.current_page = 1
         self.delete_method = None
-        self.__is_successful = True
 
     def build(self):
         return self.screen_manager
@@ -56,6 +55,7 @@ class Program(App):
         self.screen_manager.add_widget(AddScreen(name='add_screen'))
         self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
         self.screen_manager.add_widget(LoadScreen(name='load_screen'))
+        self.screen_manager.add_widget(SaveScreen(name='save_screen'))
 
     def delete_by(self, input_data: str):
         self.screen_manager.clear_widgets()
@@ -76,6 +76,7 @@ class Program(App):
         self.screen_manager.add_widget(SearchScreen(name='search_screen'))
         self.screen_manager.add_widget(AddScreen(name='add_screen'))
         self.screen_manager.add_widget(LoadScreen(name='load_screen'))
+        self.screen_manager.add_widget(SaveScreen(name='save_screen'))
         self.delete_method = None
 
     def add(self, name, address, birth, appointment_date, doctor, conclusion):
@@ -85,9 +86,12 @@ class Program(App):
         self.screen_manager.add_widget(self.controller.get_table())
         self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
         self.screen_manager.add_widget(LoadScreen(name='load_screen'))
+        self.screen_manager.add_widget(SaveScreen(name='save_screen'))
 
-    def save(self):
-        self.controller.save_to_file()
+    def save(self, file_name: str):
+        dirname = os.path.dirname(__file__)
+        file_path = os.path.join(dirname, file_name)
+        self.controller.save_to_file(file_path)
 
     def load(self, file_name: str):
         dirname = os.path.dirname(__file__)
@@ -99,6 +103,7 @@ class Program(App):
             self.screen_manager.add_widget(self.controller.get_table())
             self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
             self.screen_manager.add_widget(LoadScreen(name='load_screen'))
+            self.screen_manager.add_widget(SaveScreen(name='save_screen'))
         else:
             self.screen_manager.get_screen('load_screen').set_status(False)
         

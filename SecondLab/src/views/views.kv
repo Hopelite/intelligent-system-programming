@@ -41,7 +41,7 @@
 
         ActionButton:
             text: 'Save'
-            on_press: app.save()
+            on_press: app.screen_manager.current = 'save_screen'
 
         ActionButton:
             text: 'Load'
@@ -196,11 +196,13 @@
             on_press: app.screen_manager.current = 'table_screen'
 
 <AddScreen>:
+    message: ""
     BoxLayout:
         orientation: 'vertical'
 
         Label:
             id: status
+            text: self.parent.parent.message
         
         InputRow:
             id: input_name
@@ -253,6 +255,26 @@
         InputRow:
             id: input
             label_text: "Path to file"
+            
+        Button:
+            text: "Вернуться"
+            on_press: app.screen_manager.current = 'table_screen'
+            
+<SaveScreen>:
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
+        
+        Label:
+            id: status
+
+        Button:
+            text: "Сохранить"
+            on_press: app.save(input.text_input_id.text)
+
+        InputRow:
+            id: input
+            label_text: "Название файла"
             
         Button:
             text: "Вернуться"

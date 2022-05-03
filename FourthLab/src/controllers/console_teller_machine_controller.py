@@ -9,14 +9,11 @@ from src.persistence.banknote import Banknote
 from src.persistence.bank_card import BankCard
 from src.teller_machine import TellerMachine
 from src.persistence.banknote_storage import JsonFileStorage, JsonFileBanknoteStorage
+from src.controllers.teller_machine_controller_interface import ITellerMachineController
 
 BANKNOTE_STORAGE_FILE = "atm_data.json"
 BANK_CARD_FILE = "bank_card.json"
 LEAVE_CHARACTER = "q"
-
-class ITellerMachineController:
-    def start(self) -> None:
-        pass
 
 class ConsoleTellerMachineController(ITellerMachineController):
     __inserted_card: BankCard

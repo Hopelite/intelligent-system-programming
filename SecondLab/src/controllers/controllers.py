@@ -11,7 +11,6 @@ class ViewAppointmentsController:
         self.__storage = InMemoryStorage(list[ViewAppointment]())
         self.__repository = Repository[ViewAppointment](self.__storage)
         self.__service = AppointmentsService(self.__repository)
-        self.__current_file_path = None
 
     def start_program(self) -> ProgramScreenManager:
         table_screen = self.get_table()
@@ -69,8 +68,9 @@ class ViewAppointmentsController:
     def add_appointment(self, name, address, birth, appointment_date, doctor, conclusion) -> AddScreen:
         try:
             appointment = self.__parse_to_appointment(name, address, birth, appointment_date, doctor, conclusion)
-            if self.__is_appointment_not_filled(appointment):
-                return AddScreen(appointment, False, name='add_screen')
+            is_appointment_not_filled = self.__is_appointment_not_filled(appointment)
+            if is_appointment_not_filled[0]:
+                return AddScreen(appointment, False, is_appointment_not_filled[1], name='add_screen')
             else:
                 self.__repository.add(appointment)
                 return AddScreen(success=True, name='add_screen')
@@ -80,20 +80,18 @@ class ViewAppointmentsController:
     def load_from_file(self, path_to_file: str) -> bool:
         try:
             xml_storage = XMLStorage(path_to_file)
-            data = xml_storage.load()
-            self.__current_file_path = path_to_file
-            self.__storage.save(data)
+            self.__storage.save(xml_storage.load())
             return True
         except:
             return False
 
-    def save_to_file(self) -> bool:
-        if self.__current_file_path == None:
+    def save_to_file(self, path_to_file: str) -> bool:
+        try:
+            xml_storage = XMLStorage(path_to_file)
+            xml_storage.save(self.__storage.load())
+            return True
+        except:
             return False
-
-        xml_storage = XMLStorage(self.__current_file_path)
-        xml_storage.save(self.__storage.load())
-        return True
             
     def __parse_to_appointment(self, 
     patient_name: str, patient_address: str, 
@@ -114,9 +112,24 @@ class ViewAppointmentsController:
             doctor_name=doctor_name, conclusion=conclusion)
 
     def __is_appointment_not_filled(self, appointment: ViewAppointment):
-        return appointment.patient_name == "" or appointment.patient_address == "" \
-            or appointment.patient_date_of_birth == None or appointment.appointent_date == None \
-                or appointment.doctor_name == ""
+        message = None
+        if appointment.patient_name == "":
+            message = "Patient name shouldn't be empty"
+            return (True, message)
+        if appointment.patient_address == "":
+            message = "Patient address shouldn't be empty"
+            return (True, message)
+        if appointment.patient_date_of_birth == "":
+            message = "Patient date of birth shouldn't be empty"
+            return (True, message)
+        if appointment.appointent_date == "":
+            message = "Appointment date shouldn't be empty"
+            return (True, message)
+        if appointment.appointent_date == "":
+            message = "Doctor name shouldn't be empty"
+            return (True, message)
+
+        return (False, None)
 
     def __paginate(self, appointments: list[ViewAppointment], page: int, size: int) -> list[ViewAppointment]:
         start_index = (page - 1) * size

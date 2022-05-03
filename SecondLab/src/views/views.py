@@ -65,8 +65,9 @@ class SearchScreen(Screen):
 class AddScreen(Screen):
     model = ViewAppointment()
 
-    def __init__(self, model: ViewAppointment = ViewAppointment(), success = None, **kw) -> None:
+    def __init__(self, model: ViewAppointment = ViewAppointment(), success: bool = None, message: str = "", **kw) -> None:
         super().__init__(**kw)
+        self.message = message
         self.model = model
         self.success = success
     
@@ -80,3 +81,9 @@ class LoadScreen(Screen):
         if status == False:
             for child in self.children:
                 child.children[3].text = 'Error occured during file loading'
+
+class SaveScreen(Screen):
+    def set_status(self, status: bool) -> None:
+        if status == False:
+            for child in self.children:
+                child.children[3].text = 'Error occured during saving'
