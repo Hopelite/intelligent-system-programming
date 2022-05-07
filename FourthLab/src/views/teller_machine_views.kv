@@ -1,0 +1,74 @@
+#:kivy 2.1.0
+
+<InputRow@BoxLayout>:
+    orientation: 'horizontal'
+    label_text: 'Enter Label Text'
+    label_id: label
+    text_input_id: text_input
+    text_input_text: ''
+
+    Label:
+        size_hint: 0.3, 1
+        id: label
+        text: root.label_text
+    TextInput:
+        id: text_input
+        text: root.text_input_text
+
+<LoginScreen>:
+    BoxLayout:
+        id: box_layout
+        orientation: 'vertical'
+
+        Label:
+            id: warning_message
+            
+        InputRow:
+            id: input
+            label_text: "Enter the PIN"
+            size_hint: 0.8, 0.4
+            pos_hint: {"center_x": 0.5, "center_y": 0.3}
+
+        Button:
+            size_hint: 0.8, 0.3
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            text: "Enter"
+            on_press: app.enter_pin(input.text_input_id.text)
+
+<MenuScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: 'Check balance'
+                on_press: app.show_balance()
+
+            Button:
+                text: 'Deposit cash'
+                
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: 'Withdraw cash'
+
+            Button:
+                text: 'Pay for the phone'
+
+        Button:
+            text: 'Withdraw card'
+            on_press: app.withdraw_card()
+
+<BalanceScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            id: balance_label
+
+        Button:
+            text: 'Return'
+            on_press: app.show_menu_screen()
