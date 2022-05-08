@@ -1,5 +1,6 @@
 import pygame
 from src.states.menu_state import MenuState
+from src.states.highscores_state import HighscoresState
 from src.configuration.configuration_manager import Configuration, IConfigurationManager
 from src.constants.state_names import StateNames
 from src.states.state_machine import StateMachine
@@ -17,6 +18,7 @@ class Game:
         
         self.__state_machine = StateMachine(self.__configuration, StateNames.MENU)
         self.__state_machine.add_state(MenuState(self.__state_machine, self.__configuration, screen))
+        self.__state_machine.add_state(HighscoresState(self.__state_machine, self.__configuration, screen))
 
     def run(self) -> None:
         self.__state_machine.start()
