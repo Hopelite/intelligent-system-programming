@@ -12,7 +12,7 @@ class MenuScreen(Screen):
     pass
 
 class BalanceScreen(Screen):
-    def update_balance_label(self, amount: str):
+    def update_balance_label(self, amount: str) -> None:
         self.ids["balance_label"].text = amount
 
 class DepositCashScreen(Screen):
