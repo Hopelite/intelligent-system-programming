@@ -17,20 +17,26 @@
 
 <LoginScreen>:
     BoxLayout:
-        id: box_layout
         orientation: 'vertical'
+        size_hint: 1, 0.4
+        pos_hint: {"center_x": 0.5, "y": 0.3}
 
         Label:
+            size_hint: 1, 0.3
+            text: "Welcome. Please, enter the PIN"
+
+        Label:
+            size_hint: 1, 0.3
             id: warning_message
             
         InputRow:
             id: input
-            label_text: "Enter the PIN"
-            size_hint: 0.8, 0.4
+            label_text: "PIN"
+            size_hint: 0.8, 0.2
             pos_hint: {"center_x": 0.5, "center_y": 0.3}
 
         Button:
-            size_hint: 0.8, 0.3
+            size_hint: 0.8, 0.2
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
             text: "Enter"
             on_press: app.enter_pin(input.text_input_id.text)
@@ -44,19 +50,22 @@
 
             Button:
                 text: 'Check balance'
-                on_press: app.show_balance()
+                on_press: app.show_show_balance_screen()
 
             Button:
                 text: 'Deposit cash'
+                on_press: app.show_deposit_screen()
                 
         BoxLayout:
             orientation: 'horizontal'
 
             Button:
                 text: 'Withdraw cash'
+                on_press: app.show_withdraw_screen()
 
             Button:
                 text: 'Pay for the phone'
+                on_press: app.show_pay_for_the_phone_screen()
 
         Button:
             text: 'Withdraw card'
@@ -68,6 +77,94 @@
 
         Label:
             id: balance_label
+
+        Button:
+            text: 'Return'
+            on_press: app.show_menu_screen()
+
+<DepositCashScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            text: 'Select banknotes to deposit'
+
+        Label:
+            id: banknotes_label
+            text: 'Banknotes to deposit: '
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: '5$'
+                on_press: self.parent.parent.parent.select_banknote('5')
+                
+            Button:
+                text: '10$'
+                on_press: self.parent.parent.parent.select_banknote('10')
+                
+        BoxLayout:
+            orientation: 'horizontal'
+
+            Button:
+                text: '20$'
+                on_press: self.parent.parent.parent.select_banknote('20')
+                
+            Button:
+                text: '50$'
+                on_press: self.parent.parent.parent.select_banknote('50')
+                
+        Button:
+            text: 'Deposit'
+            on_press: app.deposit_cash()
+
+        Button:
+            text: 'Return'
+            on_press: app.show_menu_screen()
+
+<WithdrawCashScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            id: status_label
+            
+        InputRow:
+            id: input
+            label_text: "Enter the amount to withdraw"
+                
+        Button:
+            text: 'Withdraw'
+            on_press: app.withdraw_cash(input.text_input_id.text)
+
+        Button:
+            text: 'Return'
+            on_press: app.show_menu_screen()
+            
+
+<PayForPhoneScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            id: warning_message
+            
+        InputRow:
+            id: input_phone
+            label_text: "Phone number"
+            #size_hint: 0.8, 0.4
+            #pos_hint: {"center_x": 0.5, "center_y": 0.3}
+            
+        InputRow:
+            id: input_amount
+            label_text: "Amount"
+            #size_hint: 0.8, 0.4
+            #pos_hint: {"center_x": 0.5, "center_y": 0.3}
+
+        Button:
+            text: 'Proceed'
+            on_press: app.pay_for_the_phone(input_phone.text_input_id.text, input_amount.text_input_id.text)
 
         Button:
             text: 'Return'
