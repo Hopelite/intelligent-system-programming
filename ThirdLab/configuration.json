@@ -1,0 +1,13 @@
+{
+    "screenSettings":
+    {
+        "screenWidth": 610,
+        "screenHeight": 670,
+        "FPS": 60
+    },
+    "textSettings":
+    {
+        "font_size": 46,
+        "font_family": "arial"
+    }
+}
