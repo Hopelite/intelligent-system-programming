@@ -1,5 +1,3 @@
-import json
-import os
 import pygame
 from src.configuration.configuration import Configuration
 from src.constants.colors import Colors
@@ -7,57 +5,7 @@ from src.constants.state_names import StateNames
 from src.helpers.screen_helper import ScreenHelper
 from src.states.state import IState
 from src.states.state_machine import StateMachine
-
-class TableRecord:
-    def __init__(self, name: str, score: int) -> None:
-        self.name = name
-        self.score = score
-
-class TableOfRecords:
-    def __init__(self) -> None:
-        file_path = os.path.join(os.path.dirname(__file__), "records.json")
-        self.__reader = JsonReader(file_path)
-        self.__writer = JsonWriter(file_path)
-
-    def get_records(self) -> list[TableRecord]:
-        return self.__reader.read()[0:10]
-
-    def save_record(self, new_record: TableRecord) -> None:
-        records = self.__reader.read()
-        records.sort(key=lambda x: x.score, reverse=True)
-        index = 0
-        for record in records:
-            if record.score < new_record.score:
-                break
-            index += 1
-
-        records.insert(index, new_record)
-
-        self.__writer.write(records)
-
-class JsonReader:
-    def __init__(self, path: str) -> None:
-        self.__path = path
-
-    def read(self) -> list[TableRecord]:
-        records = []
-        with open(self.__path, 'r') as file:
-            data = json.load(file)
-
-            for record in data:
-                records.append(TableRecord(record['name'], int(record['score'])))
-
-        return records
-
-class JsonWriter:
-    def __init__(self, path: str) -> None:
-        self.__path = path
-
-    def write(self, records: list[TableRecord]) -> None:
-        json_records = json.dumps([ob.__dict__ for ob in records], indent=4)
-        
-        with open(self.__path, 'w') as file:
-            file.write(json_records)
+from src.states.table_of_recods import TableOfRecords
 
 class HighscoresState(IState):
     PADDING = 20
@@ -85,7 +33,7 @@ class HighscoresState(IState):
         self.__draw_high_scores()
         ScreenHelper.draw_text('HIGH SCORES',
                                 self.__screen,
-                                [self.__configuration.screen_configuration.screen_width//2, self.PADDING],
+                                [self.__configuration.screen_configuration.screen_width//2, self.PADDING * 2],
                                 self.__configuration.text_configuration.font_size,
                                 Colors.WHITE,
                                 self.__configuration.text_configuration.font_family,
@@ -94,13 +42,21 @@ class HighscoresState(IState):
     def __draw_high_scores(self):
         self.__screen.fill(Colors.BLACK)
         records = self.__table_of_records.get_records()
-        recordPosition = self.PADDING * 3
+        recordPosition = self.PADDING * 5
         for record in records:
             ScreenHelper.draw_text(record.name + ': ' + record.score.__str__(),
                                     self.__screen,
                                     [self.__configuration.screen_configuration.screen_width // 2, recordPosition],
-                                    36,
-                                    (190, 190, 190),
-                                    "arial",
+                                    self.__configuration.text_configuration.font_size - 10,
+                                    Colors.YELLOW,
+                                    self.__configuration.text_configuration.font_family,
                                     centered=True)
             recordPosition += self.__configuration.text_configuration.font_size
+
+        ScreenHelper.draw_text("Press ESC to return",
+                                self.__screen,
+                                [self.__configuration.screen_configuration.screen_width // 2, self.__configuration.screen_configuration.screen_height - self.__configuration.text_configuration.font_size - 20],
+                                self.__configuration.text_configuration.font_size,
+                                Colors.WHITE,
+                                self.__configuration.text_configuration.font_family,
+                                True)

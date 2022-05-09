@@ -9,5 +9,10 @@
     {
         "font_size": 46,
         "font_family": "arial"
+    },
+    "playerSettings":
+    {
+        "speed": 2,
+        "lives": 3
     }
 }

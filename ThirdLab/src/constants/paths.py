@@ -1,4 +1,8 @@
 import os.path
 
 class Paths:
-    SOUNDS = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'sounds')
+    SOURCE = os.path.dirname(os.path.dirname(__file__))
+
+    SOUNDS = os.path.join(SOURCE, 'sounds')
+    
+    TEXTURES = os.path.join(SOURCE, 'textures')
