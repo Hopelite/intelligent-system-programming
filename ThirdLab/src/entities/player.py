@@ -1,81 +1,78 @@
 import pygame
 from pygame import Vector2
+from src.constants.colors import Colors
 from src.configuration.configuration import Configuration
-from src.states.state import IState
+from src.entities.entity import Entity
+from src.map.map_loader import MapData
 
-class Player:
-    def __init__(self, play_state: IState, pos, health):
+class Player(Entity):
+    def __init__(self, play_state, configuration: Configuration, map_data: MapData, start_position):
+        super().__init__(configuration.map_configuration, start_position)
         self.__play_state = play_state
+        self.__configuration = configuration
+        self.lives = configuration.player_configuration.lives
+        self.__speed = configuration.player_configuration.speed
+        self.__current_direction = Vector2(1, 0)
+        self.__next_direction = None
+        self.__map_data = map_data
+        self.__is_able_to_move = True
+        self.score = 0
 
-        self.starting_pos = [pos.x, pos.y]
-        self.grid_pos = pos
-        self.pix_pos = self.get_pix_pos()
-        self.direction = Vector2(1, 0)
-        self.stored_direction = None
-        self.able_to_move = True
-        self.current_score = 0
-        self.speed = 2
-        self.lives = health
+    def update(self) -> None:
+        if self.__is_able_to_move:
+            self._screen_position += self.__current_direction * self.__speed
+        if self.is_time_to_move():
+            if self.__next_direction != None:
+                self.__current_direction = self.__next_direction
+            self.__is_able_to_move = self.__can_move()
 
-    def update(self):
-        if self.able_to_move:
-            self.pix_pos += self.direction*self.speed
-        if self.time_to_move():
-            if self.stored_direction != None:
-                self.direction = self.stored_direction
-            self.able_to_move = self.can_move()
-        # Setting grid position in reference to pix pos
-        self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER +
-                            self.__play_state.cell_width//2)//self.__play_state.cell_width+1
-        self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER +
-                            self.__play_state.cell_height//2)//self.__play_state.cell_height+1
-        if self.on_coin():
-            self.eat_coin()
+        self._update_grid_position()
 
-    def draw(self):
-        pygame.draw.circle(self.__play_state.screen, PLAYER_COLOUR, (int(self.pix_pos.x),
-                                                            int(self.pix_pos.y)), self.__play_state.cell_width//2-2)
+        if self.__is_on_coin():
+            self.__eat_coin()
 
-        # Drawing player lives
-        for x in range(self.lives):
-            pygame.draw.circle(self.__play_state.screen, PLAYER_COLOUR, (30 + 20*x, HEIGHT - 15), 7)
+    def draw(self) -> None:
+        pygame.draw.circle(self.__play_state.screen,
+            Colors.YELLOW,
+            (int(self._screen_position.x), int(self._screen_position.y)),
+            self._map_configuration.cell_width // 2 - 2)
 
-        # Drawing the grid pos rect
-        # pygame.draw.rect(self.app.screen, RED, (self.grid_pos[0]*self.app.cell_width+TOP_BOTTOM_BUFFER//2,
-        #                                         self.grid_pos[1]*self.app.cell_height+TOP_BOTTOM_BUFFER//2, self.app.cell_width, self.app.cell_height), 1)
+        for live in range(self.lives):
+            pygame.draw.circle(self.__play_state.screen, Colors.YELLOW, (30 + 20 * live, self.__configuration.screen_configuration.screen_height - 15), 7)
 
-    def on_coin(self):
-        if self.grid_pos in self.__play_state.coins:
-            if int(self.pix_pos.x+TOP_BOTTOM_BUFFER//2) % self.__play_state.cell_width == 0:
-                if self.direction == Vector2(1, 0) or self.direction == Vector2(-1, 0):
+    def __is_on_coin(self):
+        if self.position in self.__map_data.coins:
+            if int(self._screen_position.x + self._map_configuration.padding // 2) % self._map_configuration.cell_width == 0:
+                if self.__current_direction == Vector2(1, 0) or self.__current_direction == Vector2(-1, 0):
                     return True
-            if int(self.pix_pos.y+TOP_BOTTOM_BUFFER//2) % self.__play_state.cell_height == 0:
-                if self.direction == Vector2(0, 1) or self.direction == Vector2(0, -1):
+
+            if int(self._screen_position.y + self._map_configuration.padding // 2) % self._map_configuration.cell_height == 0:
+                if self.__current_direction == Vector2(0, 1) or self.__current_direction == Vector2(0, -1):
                     return True
+
         return False
 
-    def eat_coin(self):
-        self.__play_state.coins.remove(self.grid_pos)
-        self.current_score += 1
+    def __eat_coin(self):
+        self.__map_data.coins.remove(self.position)
+        self.score += 1
 
-    def move(self, direction):
-        self.stored_direction = direction
+    def move(self, direction: Vector2) -> None:
+        self.__next_direction = direction
 
-    def get_pix_pos(self):
-        return Vector2((self.grid_pos[0]*self.__play_state.cell_width)+TOP_BOTTOM_BUFFER//2+self.__play_state.cell_width//2,
-                   (self.grid_pos[1]*self.__play_state.cell_height) +
-                   TOP_BOTTOM_BUFFER//2+self.__play_state.cell_height//2)
-
-    def time_to_move(self):
-        if int(self.pix_pos.x+TOP_BOTTOM_BUFFER//2) % self.__play_state.cell_width == 0:
-            if self.direction == Vector2(1, 0) or self.direction == Vector2(-1, 0) or self.direction == Vector2(0, 0):
-                return True
-        if int(self.pix_pos.y+TOP_BOTTOM_BUFFER//2) % self.__play_state.cell_height == 0:
-            if self.direction == Vector2(0, 1) or self.direction == Vector2(0, -1) or self.direction == Vector2(0, 0):
+    def is_time_to_move(self) -> bool:
+        if int(self._screen_position.x + self._map_configuration.padding // 2) % self._map_configuration.cell_width == 0:
+            if self.__current_direction == Vector2(1, 0) or self.__current_direction == Vector2(-1, 0) or self.__current_direction == Vector2(0, 0):
                 return True
 
-    def can_move(self):
-        for wall in self.__play_state.walls:
-            if Vector2(self.grid_pos+self.direction) == wall:
+        if int(self._screen_position.y + self._map_configuration.padding // 2) % self._map_configuration.cell_height == 0:
+            if self.__current_direction == Vector2(0, 1) or self.__current_direction == Vector2(0, -1) or self.__current_direction == Vector2(0, 0):
+                return True
+
+        return False
+
+    def __can_move(self) -> bool:
+        for wall in self.__map_data.walls:
+            if Vector2(self.position + self.__current_direction) == wall:
                 return False
+
         return True

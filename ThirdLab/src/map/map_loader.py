@@ -6,11 +6,7 @@ class MapData:
 
     coins = []
 
-    enemies = []
-
     enemy_positions = []
-
-    player = None
 
     player_position = []
 

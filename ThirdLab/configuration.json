@@ -14,5 +14,11 @@
     {
         "speed": 2,
         "lives": 3
+    },
+    "mapSettings":
+    {
+        "rows": 30,
+        "columns": 28,
+        "padding": 50
     }
 }
