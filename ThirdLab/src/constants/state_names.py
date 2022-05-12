@@ -6,3 +6,5 @@ class StateNames:
     HIGHSCORES = "HIGHSCORES"
 
     INFO = "INFO"
+
+    END = "END"

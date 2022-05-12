@@ -10,7 +10,8 @@ class Entity(ABC):
         self._screen_position = self._get_screen_position()
 
     def reset_position(self) -> None:
-        self.position = self._start_position
+        self.position = self._start_position[:]
+        self._screen_position = self._get_screen_position()
 
     @abstractmethod
     def update(self) -> None:

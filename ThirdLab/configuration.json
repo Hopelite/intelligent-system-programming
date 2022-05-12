@@ -20,5 +20,9 @@
         "rows": 30,
         "columns": 28,
         "padding": 50
+    },
+    "enemySettings":
+    {
+        "speed": 1
     }
 }

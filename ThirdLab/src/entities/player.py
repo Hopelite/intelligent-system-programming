@@ -39,6 +39,9 @@ class Player(Entity):
 
         for live in range(self.lives):
             pygame.draw.circle(self.__play_state.screen, Colors.YELLOW, (30 + 20 * live, self.__configuration.screen_configuration.screen_height - 15), 7)
+    
+    def set_direction(self, direction: Vector2):
+        self.__current_direction = direction
 
     def __is_on_coin(self):
         if self.position in self.__map_data.coins:

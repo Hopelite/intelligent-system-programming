@@ -118,12 +118,23 @@ class MapConfiguration:
     def cell_height(self, value: int) -> None:
         self.__cell_height = value
 
+class EnemyConfiguration:
+    """Contains enemies configuration."""
+    @property
+    def speed(self) -> int:
+        return self.__speed
+
+    @speed.setter
+    def speed(self, value: int) -> None:
+        self.__speed = value 
+
 class Configuration:
     """Contains game configurations."""
     __screen_configuration = ScreenConfiguration()
     __text_configuration = TextConfiguration()
     __player_configuration = PlayerConfiguration()
     __map_configuration = MapConfiguration()
+    __enemy_configuration = EnemyConfiguration()
 
     @property
     def screen_configuration(self) -> ScreenConfiguration:
@@ -140,3 +151,7 @@ class Configuration:
     @property
     def map_configuration(self) -> MapConfiguration:
         return self.__map_configuration
+        
+    @property
+    def enemy_configuration(self) -> EnemyConfiguration:
+        return self.__enemy_configuration

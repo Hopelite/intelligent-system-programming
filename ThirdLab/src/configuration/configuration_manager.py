@@ -37,4 +37,6 @@ class JSONConfigurationManager(IConfigurationManager):
         configuration.map_configuration.cell_width = configuration.map_configuration.maze_width // configuration.map_configuration.colums
         configuration.map_configuration.cell_height = configuration.map_configuration.maze_height // configuration.map_configuration.rows
 
+        configuration.enemy_configuration.speed = configs["enemySettings"]["speed"]
+
         return configuration

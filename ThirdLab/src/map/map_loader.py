@@ -2,13 +2,11 @@ from pygame import Vector2
 from src.constants.map_marks import MapMarks
 
 class MapData:
-    walls = []
-
-    coins = []
-
-    enemy_positions = []
-
-    player_position = []
+    def __init__(self) -> None:
+        self.walls = []
+        self.coins = []
+        self.enemy_positions = []
+        self.player_position = []
 
 class MapLoader:
     def __init__(self, file_path: str) -> None:

@@ -1,6 +1,7 @@
 import pygame
 from src.configuration.configuration_manager import Configuration, IConfigurationManager
 from src.constants.state_names import StateNames
+from src.states.end_state import EndState
 from src.states.highscores_state import HighscoresState
 from src.states.menu_state import MenuState
 from src.states.play_state import PlayState
@@ -19,8 +20,10 @@ class Game:
         
         self.__state_machine = StateMachine(self.__configuration, StateNames.MENU)
         self.__state_machine.add_state(MenuState(self.__state_machine, self.__configuration, screen))
-        self.__state_machine.add_state(PlayState(self.__state_machine, self.__configuration, screen))
+        play_state = PlayState(self.__state_machine, self.__configuration, screen)
+        self.__state_machine.add_state(play_state)
         self.__state_machine.add_state(HighscoresState(self.__state_machine, self.__configuration, screen))
+        self.__state_machine.add_state(EndState(play_state, self.__state_machine, self.__configuration, screen))
 
     def run(self) -> None:
         self.__state_machine.start()
