@@ -8,3 +8,7 @@ class Colors:
     WHITE = (255, 255, 255)
     
     YELLOW = (255,255,0)
+
+    BLUE = (43, 78, 203)
+
+    GREEN = (100, 215, 33)

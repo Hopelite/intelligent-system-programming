@@ -1,5 +1,4 @@
 import sys
-import getopt
 from src.controllers.teller_machine_controller_interface import ITellerMachineController
 from src.controllers.console_teller_machine_controller import ConsoleTellerMachineController
 from src.controllers.gui_teller_machine_controller import GUITellerMachineController

@@ -116,7 +116,7 @@ class Enemy(Entity):
         return Vector2(xdir, ydir)
 
     def __find_next_cell_in_path(self, target):
-        path = self.__BFS([int(self.position.x), int(self.position.y)], [
+        path = self.__BFS([int(self.position[0]), int(self.position[1])], [
                         int(target[0]), int(target[1])])
         return path[1]
 

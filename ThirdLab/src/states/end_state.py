@@ -19,7 +19,7 @@ class EndState(IState):
         self.__play_state = play_state
         self.__state_machine = state_machine
         self.__configuration = configuration
-        self.screen = screen
+        self.__screen = screen
         self.__is_filling = None
         self.__table_of_records = TableOfRecords()
         self.__player_name = ""
@@ -62,20 +62,28 @@ class EndState(IState):
                     
 
     def draw(self) -> None:
-        self.screen.fill(Colors.BLACK)
+        self.__screen.fill(Colors.BLACK)
 
         if not self.__is_filling:
             ScreenHelper.draw_text("GAME OVER",
-                self.screen,
+                self.__screen,
                 [305, 100],
                 self.__configuration.text_configuration.font_size,
                 Colors.YELLOW,
                 self.__configuration.text_configuration.font_family,
                 centered=True
             )
+
+            ScreenHelper.draw_text("Press ESC to return",
+                    self.__screen,
+                    [self.__configuration.screen_configuration.screen_width // 2, self.__configuration.screen_configuration.screen_height - self.__configuration.text_configuration.font_size - 20],
+                    self.__configuration.text_configuration.font_size,
+                    Colors.WHITE,
+                    self.__configuration.text_configuration.font_family,
+                    True)
         elif self.__is_filling:
             ScreenHelper.draw_text("ENTER YOUR NAME: {0}".format(self.__player_name),
-                self.screen,
+                self.__screen,
                 [305, 100],
                 self.__configuration.text_configuration.font_size - 10,
                 Colors.YELLOW,
