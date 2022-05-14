@@ -30,7 +30,8 @@ class Table(GridLayout):
         super().__init__(**kwargs)
         number_of_appointments = len(appointments)
         if number_of_appointments > self.rows - 1:
-            raise MoreDataThenRowsException("More rows than available have passed to the table.")
+            self.rows = number_of_appointments + 1
+        #     raise MoreDataThenRowsException("More rows than available have passed to the table.")
 
         self.__build_table(appointments)
         rows_left = self.rows - 1 - number_of_appointments
@@ -44,8 +45,8 @@ class Table(GridLayout):
     def __build_table_row(self, appointment: ViewAppointment) -> None:
         self.add_widget(TableCell(text=appointment.patient_name))
         self.add_widget(TableCell(text=appointment.patient_address))
-        self.add_widget(TableCell(text=appointment.patient_date_of_birth.strftime('%m-%d-%Y')))
-        self.add_widget(TableCell(text=appointment.appointent_date.strftime('%m-%d-%Y')))
+        self.add_widget(TableCell(text=appointment.patient_date_of_birth.strftime('%d-%m-%Y')))
+        self.add_widget(TableCell(text=appointment.appointent_date.strftime('%d-%m-%Y')))
         self.add_widget(TableCell(text=appointment.doctor_name))
         self.add_widget(TableCell(text=appointment.conclusion))
 

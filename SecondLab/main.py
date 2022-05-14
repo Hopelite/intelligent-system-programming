@@ -100,13 +100,21 @@ class Program(App):
             self.screen_manager.clear_widgets()
             self.screen_manager.add_widget(self.controller.get_table())
             self.screen_manager.add_widget(SearchScreen(name='search_screen'))
-            self.screen_manager.add_widget(self.controller.get_table())
+            self.screen_manager.add_widget(AddScreen(name='add_screen'))
             self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
             self.screen_manager.add_widget(LoadScreen(name='load_screen'))
             self.screen_manager.add_widget(SaveScreen(name='save_screen'))
         else:
             self.screen_manager.get_screen('load_screen').set_status(False)
-        
+
+    def set_elements_count(self, count: int):
+        self.screen_manager.clear_widgets()
+        self.screen_manager.add_widget(self.controller.get_table(size = count))
+        self.screen_manager.add_widget(AddScreen(name='add_screen'))
+        self.screen_manager.add_widget(SearchScreen(name='search_screen'))
+        self.screen_manager.add_widget(DeleteScreen(name='delete_screen'))
+        self.screen_manager.add_widget(LoadScreen(name='load_screen'))
+        self.screen_manager.add_widget(SaveScreen(name='save_screen'))
         
 if __name__ == '__main__':
     Program().run()

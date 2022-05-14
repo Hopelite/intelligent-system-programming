@@ -2,7 +2,6 @@ import os.path
 from random import randrange
 import pygame
 from pygame import Vector2
-from pygame.sprite import Sprite
 from src.configuration.configuration import Configuration
 from src.constants.colors import Colors
 from src.constants.paths import Paths
@@ -25,7 +24,7 @@ class PlayState(IState):
         self.__state_machine = state_machine
         self.__configuration = configuration
         self.__death_sound = pygame.mixer.Sound(os.path.join(Paths.SOUNDS, self.PACMAN_DEATH_SOUND_FILE))
-
+        pygame.time.set_timer(pygame.USEREVENT, 500)
         self.screen = screen
         self.reset()
 
@@ -36,6 +35,9 @@ class PlayState(IState):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.__state_machine.stop()
+            if event.type == pygame.USEREVENT:
+                for enemy in self.enemies:
+                    enemy.animate()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     self.player.move(Vector2(-1, 0))
@@ -67,12 +69,12 @@ class PlayState(IState):
         self.screen.fill(Colors.BLACK)
         self.screen.blit(self.__background, (self.__configuration.map_configuration.padding // 2, self.__configuration.map_configuration.padding // 2))
         self.__draw_coins()
-        ScreenHelper.draw_text('CURRENT SCORE: {}'.format(self.player.score),
-                                self.__background,
-                                [20, 0],
-                                18,
-                                Colors.WHITE,
-                                self.__configuration.text_configuration.font_family)
+        # ScreenHelper.draw_text('CURRENT SCORE: {}'.format(self.player.score),
+        #                         self.__background,
+        #                         [20, 0],
+        #                         18,
+        #                         Colors.WHITE,
+        #                         self.__configuration.text_configuration.font_family)
         self.player.draw()
         for enemy in self.enemies:
             enemy.draw()

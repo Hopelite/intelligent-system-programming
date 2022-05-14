@@ -1,5 +1,6 @@
 import pygame
 from pygame import Vector2
+from pygame.sprite import Sprite
 from src.constants.colors import Colors
 from src.configuration.configuration import Configuration
 from src.entities.entity import Entity

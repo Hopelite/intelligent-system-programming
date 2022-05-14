@@ -1,9 +1,13 @@
 from enum import Enum
 import pygame
+import os
+from itertools import cycle
 from pygame import Vector2
+from pygame.sprite import Sprite
 from src.entities.entity import Entity
 from src.configuration.configuration import Configuration, EnemyConfiguration
 from src.constants.colors import Colors
+from src.constants.paths import Paths
 from src.map.map_loader import MapData
 import random
 
@@ -19,7 +23,18 @@ class Enemy(Entity):
         self.__configuration = configuration
         self.__map_data = map_data
 
-        self.radius = int(self.__configuration.map_configuration.cell_width // 2.3)
+        text1 = pygame.image.load(os.path.join(Paths.TEXTURES, 'enemy_1.png'))
+        text1.set_colorkey((255, 255, 255))
+        
+        text2 = pygame.image.load(os.path.join(Paths.TEXTURES, 'enemy_2.png'))
+        text2.set_colorkey((255, 255, 255))
+        
+        text3 = pygame.image.load(os.path.join(Paths.TEXTURES, 'enemy_3.png'))
+        text3.set_colorkey((255, 255, 255))
+
+        sprites = [text1, text2, text3]
+        self.sprite = sprites[0]
+        self.__animation_cycle = cycle(sprites)
 
         self.colour = color
         self.direction = Vector2(0, 0)
@@ -54,9 +69,14 @@ class Enemy(Entity):
             else:
                 return Vector2(self.__configuration.map_configuration.colums-2, self.__configuration.map_configuration.rows-2)
 
+    def animate(self) -> None:
+        self.sprite = next(self.__animation_cycle)
+
     def draw(self) -> None:
-        pygame.draw.circle(self.__play_state.screen, self.colour,
-                           (int(self._screen_position.x), int(self._screen_position.y)), self.radius)
+        self.__play_state.screen.blit(self.sprite, (int(self._screen_position.x) - 10, int(self._screen_position.y) - 10))
+
+        # pygame.draw.circle(self.__play_state.screen, self.colour,
+        #                    (int(self._screen_position.x), int(self._screen_position.y)), self.radius)
         
     def __set_speed(self, enemy_configuration: EnemyConfiguration) -> int:
         if self.__personality == Personality.FAST:
