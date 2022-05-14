@@ -1,4 +1,5 @@
 import json
+import os
 
 class TableRecord:
     def __init__(self, name: str, score: int) -> None:
@@ -7,9 +8,9 @@ class TableRecord:
 
 class TableOfRecords:
     def __init__(self) -> None:
-        filename = "records.json"
-        self.__reader = JsonReader(filename)
-        self.__writer = JsonWriter(filename)
+        file_path = os.path.join(os.path.dirname(__file__), "records.json")
+        self.__reader = JsonReader(file_path)
+        self.__writer = JsonWriter(file_path)
 
     def get_records(self) -> list[TableRecord]:
         return self.__reader.read()[0:10]

@@ -12,8 +12,8 @@ class ViewAppointmentsController:
         self.__repository = Repository[ViewAppointment](self.__storage)
         self.__service = AppointmentsService(self.__repository)
 
-    def start_program(self) -> ProgramScreenManager:
-        table_screen = self.get_table()
+    def start_program(self, table_size: int = 10) -> ProgramScreenManager:
+        table_screen = self.get_table(size = table_size)
         return ProgramScreenManager(table_screen) 
 
     def get_number_of_records(self) -> int:
@@ -39,12 +39,12 @@ class ViewAppointmentsController:
         return TableScreen(appointments, name="table_screen")
         
     def find_by_appointment_date(self, appointment_date_str: str, page: int = 1, size: int = 10) -> TableScreen:
-        appointment_date = datetime.strptime(appointment_date_str, '%m-%d-%Y').date()
+        appointment_date = datetime.strptime(appointment_date_str, '%d-%m-%Y').date()
         appointments = self.__paginate(self.__service.get_by_appointment_date(appointment_date), page, size)
         return TableScreen(appointments, name="table_screen")
         
     def find_by_birth_date(self, birth_date_str: str, page: int = 1, size: int = 10) -> TableScreen:
-        birth_date = datetime.strptime(birth_date_str, '%m-%d-%Y').date()
+        birth_date = datetime.strptime(birth_date_str, '%d-%m-%Y').date()
         appointments = self.__paginate(self.__service.get_by_birth_date(birth_date), page, size)
         return TableScreen(appointments, name="table_screen")
 
@@ -74,6 +74,8 @@ class ViewAppointmentsController:
             else:
                 self.__repository.add(appointment)
                 return AddScreen(success=True, name='add_screen')
+        except ValueError:
+            return AddScreen(success=False, message="Please enter the date in this format: dd-mm-yy", name='add_screen')
         except:
             return AddScreen(success=False, name='add_screen')
 

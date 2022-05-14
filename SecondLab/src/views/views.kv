@@ -70,6 +70,21 @@
         ActionButton:
             text: 'Удалить'
             on_press: app.screen_manager.current = 'delete_screen'
+            
+        ActionGroup:
+
+
+            ActionButton:
+                text: '5'
+                on_press: app.set_elements_count(5)
+                
+            ActionButton:
+                text: '10'
+                on_press: app.set_elements_count(10)
+                
+            ActionButton:
+                text: '15'
+                on_press: app.set_elements_count(15)
 
 <InputRow@BoxLayout>:
     orientation: 'horizontal'
