@@ -20,6 +20,15 @@ class Banknote:
         
     def __eq__(self, other) -> bool:
         return self.value == other.value
+    
+    @staticmethod
+    def str_to_banknotes(string: str):
+        string_values = string.split()
+        banknotes = []
+        for value in string_values:
+            banknotes.append(Banknote(Decimal(value)))
+
+        return banknotes
         
 class BanknoteValidator:
     @staticmethod

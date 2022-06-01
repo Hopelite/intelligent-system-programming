@@ -1,3 +1,5 @@
+import json
+from enum import Enum
 from datetime import datetime
 from decimal import Decimal
 from src.persistence.card_account import ICardAccount, CardAccount
@@ -43,8 +45,16 @@ class BankCardValidator:
 
         return password
 
+class CardState(Enum):
+    BLOCKED = 1
+    OPENED = 2
+    CLOSED = 3
+
 class BankCard:
     """Represents bank card model."""
+    NUMBER_OF_ATTEMPS = 3
+    __attemps_count: int
+
     def __init__(self, card_number: str, expiration_date: datetime, username: str, cvc: str, password: str, card_account: ICardAccount) -> None:
         self.__card_number = BankCardValidator.validate_card_number(card_number)
         self.__expiration_date = expiration_date
@@ -52,6 +62,20 @@ class BankCard:
         self.__cvc = BankCardValidator.validate_cvc(cvc)
         self.__password = BankCardValidator.validate_password(password)
         self.__card_account = card_account
+        self.__attemps_count = 0 
+        self.__state = CardState.CLOSED
+
+    @staticmethod
+    def load_from_file(card_file_path: str):
+        with open(card_file_path) as file:
+            return json.load(file, object_hook=BankCard.from_json)
+
+    def save_to_file(self, card_file_path: str) -> None:
+        with open(card_file_path, "w") as file:
+            json.dump(self.to_json(), file, indent=4)
+
+    def get_card_balance(self) -> Decimal:
+        return self.card_account.balance
 
     @property
     def card_number(self) -> str:
@@ -76,6 +100,38 @@ class BankCard:
     @property
     def card_account(self) -> CardAccount:
         return self.__card_account
+        
+    @property
+    def attempts_left(self) -> str:
+        return (self.NUMBER_OF_ATTEMPS - self.__attemps_count).__str__()
+        
+    @property
+    def state(self) -> CardState:
+        return self.__state
+
+    def is_access_gained(self) -> bool:
+        return self.state == CardState.OPENED
+
+    def gain_access(self, password: str) -> CardState:
+        if self.__state == CardState.BLOCKED:
+            return self.__state
+
+        if password == self.password:
+            self.__state = CardState.OPENED
+        else:
+            self.__attemps_count += 1
+            if self.__attemps_count == self.NUMBER_OF_ATTEMPS:
+                self.__state = CardState.BLOCKED
+            else:
+                self.__state = CardState.CLOSED
+
+        return self.__state
+            
+    def withdraw_cash(self, amount: Decimal) -> None:
+        self.card_account.withdraw_cash(amount)
+        
+    def deposit_cash(self, amount: Decimal) -> None:
+        self.card_account.deposit_cash(amount)
 
     @staticmethod
     def from_json(json_dct):

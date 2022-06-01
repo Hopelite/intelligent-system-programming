@@ -32,17 +32,17 @@ class TellerMachine(ITellerMachine):
 
     def withdraw_cash(self, amount: Decimal, card: BankCard) -> list[Banknote]:
         banknotes = self.__storage.withdraw_banknotes(amount)
-        card.card_account.withdraw_cash(amount)
+        card.withdraw_cash(amount)
         return banknotes
 
     def deposit_cash(self, cash: list[Banknote], card: BankCard) -> Decimal:
         self.__storage.deposit_banknotes(cash)
         amount = self.__calculate_cash_amount(cash)
-        card.card_account.deposit_cash(amount)
+        card.deposit_cash(amount)
         return amount
 
     def pay_for_the_phone(self, phone_number: str, amount: Decimal, card: BankCard) -> None:
-        card.card_account.withdraw_cash(amount)
+        card.withdraw_cash(amount)
 
     def __calculate_cash_amount(self, banknotes: list[Banknote]) -> Decimal:
         cash = Decimal()
